@@ -1,6 +1,5 @@
-import unittest
-
 from ..utils import TranspileTestCase
+
 
 class MathModuleTests(TranspileTestCase):
     def test_fabs_float(self):
