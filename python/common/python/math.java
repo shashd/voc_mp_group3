@@ -16,7 +16,9 @@ public class math extends org.python.types.Module {
     	else if (number instanceof org.python.types.Int) {
     		double ceilArg = ((org.python.types.Int)number).value;
     		return new org.python.types.Int(Math.ceil(ceilArg));
-    	}
-    	throw new org.python.exceptions.TypeError("Type Error: Must be a number");
+    	} 
+        else {
+    	   throw new org.python.exceptions.TypeError("must be real number, not " + number.typeName());
+        }
     }
 }

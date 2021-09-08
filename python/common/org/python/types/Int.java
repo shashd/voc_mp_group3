@@ -50,7 +50,7 @@ public class Int extends org.python.types.Object {
     }
 
     public Int(double value) {
-        this.value = (int) value;
+        this.value = (long) value;
     }
 
     @org.python.Method(
