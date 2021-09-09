@@ -31,3 +31,15 @@ class MathModuleTests(TranspileTestCase):
             except Exception as e:
                 print(type(e), e)
         """)
+
+    def test_sqrt_invalid_argument(self):
+        self.assertCodeExecution("""
+            import math
+            try:
+                print(math.sqrt(-1))
+                print(math.sqrt(-2.1))
+                print(math.sqrt("1"))
+                print(math.sqrt(None))
+            except Exception as e:
+                print(type(e), e)
+        """)
