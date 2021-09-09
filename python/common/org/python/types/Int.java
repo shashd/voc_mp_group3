@@ -49,6 +49,10 @@ public class Int extends org.python.types.Object {
         this.value = value;
     }
 
+    public Int(double value) {
+        this.value = (long) value;
+    }
+
     @org.python.Method(
             name = "int",
             __doc__ = "int(x=0) -> integer" +
