@@ -10,13 +10,17 @@ public class math extends org.python.types.Module {
     )
     public static org.python.Object ceil(org.python.Object number) {
     	if (number instanceof org.python.types.Float) {
-    		double ceilArg = ((org.python.types.Float)number).value;
-    		return new org.python.types.Int(Math.ceil(ceilArg));
+    		double ceil_arg = ((org.python.types.Float)number).value;
+    		return new org.python.types.Int(Math.ceil(ceil_arg));
     	}
     	else if (number instanceof org.python.types.Int) {
-    		double ceilArg = ((org.python.types.Int)number).value;
-    		return new org.python.types.Int(Math.ceil(ceilArg));
+    		double ceil_arg = ((org.python.types.Int)number).value;
+    		return new org.python.types.Int(Math.ceil(ceil_arg));
     	} 
+        else if (number instanceof org.python.types.Bool) {
+            int int_arg = ((org.python.types.Bool)number).value ? 1 : 0;
+            return new org.python.types.Int(Math.ceil(int_arg));
+        }
         else {
     	   throw new org.python.exceptions.TypeError("must be real number, not " + number.typeName());
         }
