@@ -40,6 +40,6 @@ class MathModuleTests(TranspileTestCase):
                 print(math.sqrt(-2.1))
                 print(math.sqrt("1"))
                 print(math.sqrt(None))
-            except Exception as e:
-                print(type(e), e)
+            except ValueError as e:
+                print(e)
         """)
