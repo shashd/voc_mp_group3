@@ -139,6 +139,14 @@ class FloatTests(TranspileTestCase):
             except TypeError as err:
                 print(err)
         """)
+    
+    def test_rsub(self):
+        self.assertCodeExecution("""
+            try:
+                print(1.7-2.5)
+            except TypeError as err:
+                print(err)
+        """)
 
 
 class UnaryFloatOperationTests(UnaryOperationTestCase, TranspileTestCase):
