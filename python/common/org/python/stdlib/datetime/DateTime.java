@@ -213,9 +213,9 @@ public class DateTime extends org.python.types.Object {
 
     @org.python.Method(__doc__ = "")
     public org.python.Object weekday() {
-	double y = ((org.python.types.Int) this.year).value;
-	double m = ((org.python.types.Int) this.month).value;
-	double d = ((org.python.types.Int) this.day).value;
+	double y = ((org.python.types.Int) this.year.__int__()).value;
+	double m = ((org.python.types.Int) this.month.__int__()).value;
+	double d = ((org.python.types.Int) this.day.__int__()).value;
 
 	java.util.Date myCalendar = new java.util.GregorianCalendar((int) y, (int) m - 1, (int) d).getTime();
 	java.util.Calendar c = java.util.Calendar.getInstance();

@@ -185,6 +185,9 @@ public class DateTimeTest {
             Int.getInt(2), Int.getInt(50), Int.getInt(1000000)};
         errorMsg = "microsecond 1000000is out of range";
         createErrorDateTime(args, kwargs, errorMsg);
+
+        // todo: with other types of inputs, no matter works or throws error
+
     }
 
 
@@ -196,4 +199,13 @@ public class DateTimeTest {
         assertEquals("2000-02-01", str.value);
     }
 
+
+    @Test
+    public void testWeekDay(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime = new DateTime(args,Collections.emptyMap());
+        Object weekday = dateTime.weekday();
+        Str str = new Str(weekday + "");
+        assertEquals("5", str.value);
+    }
 }
