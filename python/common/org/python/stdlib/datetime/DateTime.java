@@ -475,6 +475,64 @@ public class DateTime extends org.python.types.Object {
         return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
     }
 
+
+    @org.python.Method(
+        __doc__ = "Return a datetime corresponding to a date_string in one of the formats emitted by " +
+            "date.isoformat() and datetime.isoformat().",
+        args = {"other"}
+    )
+    public static org.python.Object fromisoformat(org.python.Object other){
+        java.lang.String str = ((org.python.types.Str) other).value;
+        Object[] args = new Object[]{};
+        if (str.split("T").length <= 2){
+            str = str.replace("T"," ");
+            java.lang.String[] splitStr = str.split(" ");
+            // only date
+            if (splitStr.length == 1){
+                java.lang.String[] date = splitStr[0].split("-");
+                if (date.length!=3 ){
+                    throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+                }
+                long year = java.lang.Long.parseLong(date[0]);
+                long month = java.lang.Long.parseLong(date[1]);
+                long day = java.lang.Long.parseLong(date[2]);
+                args = new Object[]{org.python.types.Int.getInt(year),
+                                org.python.types.Int.getInt(month), org.python.types.Int.getInt(day)};
+
+            }
+            // both date and time
+            else {
+                java.lang.String[] date = splitStr[0].split("-");
+                java.lang.String[] time = splitStr[1].split(":");
+                if (date.length != 3 || time.length != 3){
+                    throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+                }
+                long year = java.lang.Long.parseLong(date[0]);
+                long month = java.lang.Long.parseLong(date[1]);
+                long day = java.lang.Long.parseLong(date[2]);
+                long hour = java.lang.Long.parseLong(time[0]);
+                long minute = java.lang.Long.parseLong(time[1]);
+                long second = 0L;
+                long microsecond = 0L;
+                java.lang.String[] seconds = time[2].split("\\.");
+                // check whether microseconds exist
+                if (seconds.length == 2){
+                    second = Long.parseLong(seconds[0]);
+                    microsecond = Long.parseLong(seconds[1]);
+                } else{
+                    second = Long.parseLong(time[2]);
+                }
+                args =  new Object[]{org.python.types.Int.getInt(year), org.python.types.Int.getInt(month),
+                                     org.python.types.Int.getInt(day),org.python.types.Int.getInt(hour),
+                                    org.python.types.Int.getInt(minute),org.python.types.Int.getInt(second),
+                                    org.python.types.Int.getInt(microsecond)};
+            }
+        } else {
+            throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+        }
+        return new DateTime(args,Collections.emptyMap());
+    }
+
     @org.python.Method(
         __doc__ = "Return a datetime with the same attributes, except for those attributes given new values by " +
             "whichever keyword arguments are specified. Note that tzinfo=None can be specified to create a naive" +
