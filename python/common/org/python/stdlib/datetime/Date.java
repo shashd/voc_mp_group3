@@ -105,7 +105,7 @@ public class Date extends org.python.types.Object {
 	    String d = this.day + "";
 
 	    if (!y.equals("null") && !(this.year instanceof org.python.types.Int)) {
-		throw new org.python.exceptions.TypeError("intege argument expected, got " + this.year.typeName());
+		throw new org.python.exceptions.TypeError("integer argument expected, got " + this.year.typeName());
 	    }
 	    if (kwargs.get("year") != null && args.length > 0) {
 		throw new org.python.exceptions.SyntaxError("positional argument follows keyword argument");
@@ -262,6 +262,40 @@ public class Date extends org.python.types.Object {
 	int day = c.get(java.util.Calendar.DAY_OF_WEEK);
 	int[] convertToPython = { 6, 0, 1, 2, 3, 4, 5 };
 	return org.python.types.Int.getInt(convertToPython[day - 1]);
+    }
 
+    @org.python.Method(__doc__ = "")
+    public static Date fromisoformat(org.python.types.Str date_string) {
+        java.lang.String str = ((org.python.types.Str) date_string).value;
+        java.lang.String[] strSplit = str.split("-");
+
+        if (strSplit.length != 3) {
+            throw new org.python.exceptions.TypeError("Need YYYY-MM-DD");
+        }
+
+        if (strSplit[0].length() != 4) {
+            throw new org.python.exceptions.TypeError("Year format is error");
+        }
+
+        if (strSplit[1].length() != 2) {
+            throw new org.python.exceptions.TypeError("Month format is error");
+        }
+
+        if (strSplit[2].length() != 2) {
+            throw new org.python.exceptions.TypeError("Day format is error");
+        }
+
+        int y, m, d;
+        try {
+            y = java.lang.Integer.parseInt(strSplit[0]);
+            m = java.lang.Integer.parseInt(strSplit[1]);
+            d = java.lang.Integer.parseInt(strSplit[2]);
+        }
+        catch(Exception e) {
+            throw new org.python.exceptions.TypeError("Year, month and date need to be integers");
+        }
+
+        org.python.Object[] args = {org.python.types.Int.getInt(y), org.python.types.Int.getInt(m), org.python.types.Int.getInt(d)};
+        return new Date(args, Collections.emptyMap());
     }
 }

@@ -60,6 +60,7 @@ public class DateTest {
     @Test
     public void testConstructorFail() {
 
+//      when  args.length + kwargs.size() == 3
         Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1), Int.getInt(4)};
         createErrorDate(args, Collections.emptyMap(), "function takes at most 3 arguments (4 given)");
 
@@ -104,48 +105,119 @@ public class DateTest {
 
         args = new Object[]{new org.python.types.Str("2000"), Int.getInt(2), Int.getInt(1)};
         createErrorDate(args, Collections.emptyMap(), "integer argument expected, got str");
-        }
 
-        @Test
-        public void testCtime() {
-            Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1)};
-            Date date = new Date(args, Collections.emptyMap());
-            Str str = (Str) date.ctime();
-            assertEquals(str.value, "Tue Feb  1 00:00:00 2000");
-        }
+//        when args.length + kwargs.size() == 2
 
-        @Test
-        public void test__repr__ () {
-            Object[] args = {Int.getInt(200), Int.getInt(2), Int.getInt(1)};
-            Date date = new Date(args, Collections.emptyMap());
-            Str str = (Str) date.__repr__();
-            assertEquals(str.value, "0200-02-01");
+        args = new Object[]{new Str("2000") , Int.getInt(2)};
+        createErrorDate(args,Collections.emptyMap(),"integer argument expected, got str");
 
-            args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(11)};
-            date = new Date(args, Collections.emptyMap());
-            str = (Str) date.__repr__();
-            assertEquals(str.value, "2000-10-11");
-        }
+        kwargs.clear();
+        kwargs.put("year",Int.getInt(2000));
+        args = new Object[]{Int.getInt(2)};
+        createErrorDate(args,kwargs,"positional argument follows keyword argument");
 
-//    @Test
-//    public void testFromisoformat(){
-//        Object[] args = { new Str("2002,02,01")};
-//        Date date = new Date(args,Collections.emptyMap());
-//
-//        assertEquals(str.value,"2000-02-01");
-//    }
+        args = new Object[]{Int.getInt(2000),new Str("2000")};
+        createErrorDate(args,Collections.emptyMap(),"integer argument expected, got str");
 
-        @Test
-        public void testToday () {
-            Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1)};
-            Date date = new Date(args, Collections.emptyMap());
-            Date today = (Date) date.today();
-            long y = ((Int) today.year).value;
-            long m = ((Int) today.month).value;
-            long d = ((Int) today.day).value;
-            assertEquals(y, 2021);
-            assertEquals(m, 9);
-            assertEquals(d, 19);
-        }
+        kwargs.clear();
+        kwargs.put("month",Int.getInt(2));
+        kwargs.put("day",Int.getInt(1));
+        args = new Object[0];
+        createErrorDate(args,kwargs,"function missing required argument 'year' (pos 1)");
+
+        kwargs.clear();
+        kwargs.put("year",Int.getInt(2000));
+        kwargs.put("day",Int.getInt(1));
+        args = new Object[0];
+        createErrorDate(args,kwargs,"function missing required argument 'month' (pos 2)");
+
+        args = new Object[]{Int.getInt(2000), Int.getInt(2)};
+        createErrorDate(args,Collections.emptyMap(),"function missing required argument 'day' (pos 3)");
+
+//        when args.length + kwargs.size() == 1
+
+        kwargs.clear();
+        kwargs.put("year",Int.getInt(2000));
+        args = new Object[0];
+        createErrorDate(args,kwargs,"function missing required argument 'month' (pos 2)");
+
+        args = new Object[]{Int.getInt(2000)};
+        createErrorDate(args,Collections.emptyMap(),"function missing required argument 'month' (pos 2)");
+
+        kwargs.clear();
+        kwargs.put("month",Int.getInt(2));
+        args = new Object[0];
+        createErrorDate(args,kwargs,"function missing required argument 'year' (pos 1)");
+
+        kwargs.clear();
+        kwargs.put("day",Int.getInt(1));
+        args = new Object[0];
+        createErrorDate(args,kwargs,"function missing required argument 'year' (pos 1)");
+
+        args = new Object[]{new Str("2000")};
+        createErrorDate(args,Collections.emptyMap(),"integer argument expected, got str");
+
+//        when args.length + kwargs.size() == 0
+        args = new Object[0];
+        createErrorDate(args,Collections.emptyMap(),"function missing required argument 'year' (pos 1)");
+
+    }
+
+    @Test
+    public void testCtime() {
+        Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1)};
+        Date date = new Date(args, Collections.emptyMap());
+        Str str = (Str) date.ctime();
+        assertEquals(str.value, "Tue Feb  1 00:00:00 2000");
+    }
+
+    @Test
+    public void test__repr__ () {
+        Object[] args = {Int.getInt(200), Int.getInt(2), Int.getInt(1)};
+        Date date = new Date(args, Collections.emptyMap());
+        Str str = (Str) date.__repr__();
+        assertEquals(str.value, "0200-02-01");
+
+        args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(11)};
+        date = new Date(args, Collections.emptyMap());
+        str = (Str) date.__repr__();
+        assertEquals(str.value, "2000-10-11");
+    }
+
+    @Test
+    public void testFromisoformat(){
+        Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1)};
+        Date date = new Date(args,Collections.emptyMap());
+
+        Date newDate1 = date.fromisoformat(new org.python.types.Str("2019-12-04"));
+        y = ((Int) newDate1.year).value;
+        m = ((Int) newDate1.month).value;
+        d = ((Int) newDate1.day).value;
+        assertEquals(y, 2019);
+        assertEquals(m, 12);
+        assertEquals(d, 4);
+
+        Date newDate2 = date.fromisoformat(new org.python.types.Str("0200-02-11"));
+        y = ((Int) newDate2.year).value;
+        m = ((Int) newDate2.month).value;
+        d = ((Int) newDate2.day).value;
+        assertEquals(y, 200);
+        assertEquals(m, 2);
+        assertEquals(d, 11);
+    }
+
+    @Test
+    public void testToday(){
+
+        Date today = (Date) Date.today();
+
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        int y = now.getYear();
+        int m = now.getMonthValue();
+        int d = now.getDayOfMonth();
+
+        assertEquals(((Int) today.year).value, y);
+        assertEquals(((Int) today.month).value, m);
+        assertEquals(((Int) today.day).value, d);
+    }
 }
-
