@@ -326,7 +326,30 @@ public class DateTimeTest {
 
     // todo: test class method
 
-    // todo: test instance method
+    /**
+     * Test class method
+     */
+    @Test
+    public void testMe() {
+
+    }
+
+
+    /**
+     * Test instance method
+     */
+    @Test
+    public void testReplace(){
+        Object[] args = { Int.getInt(2021), Int.getInt(9), Int.getInt(18),
+            Int.getInt(14), Int.getInt(0), Int.getInt(0), Int.getInt(0 / 1000) };
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        HashMap<String,Object> kwargs = new HashMap<>();
+        kwargs.put("year",Int.getInt(2022));
+        DateTime dateTime2 = (DateTime) dateTime1.replace(kwargs);
+        String year = ((Str)dateTime2.__year__()).value;
+        assertEquals("2022",year);
+
+    }
 
 
 }

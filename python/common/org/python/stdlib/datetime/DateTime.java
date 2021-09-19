@@ -1,6 +1,9 @@
 package org.python.stdlib.datetime;
 
+import org.python.types.Object;
+
 import java.util.Collections;
+import java.util.HashMap;
 
 public class DateTime extends org.python.types.Object {
     private final int YEAR_INDEX = 0;
@@ -470,6 +473,32 @@ public class DateTime extends org.python.types.Object {
             return org.python.types.Bool.getBool(false);
         }
         return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(
+        __doc__ = "Return a datetime with the same attributes, except for those attributes given new values by " +
+            "whichever keyword arguments are specified. Note that tzinfo=None can be specified to create a naive" +
+            " datetime from an aware datetime with no conversion of date and time data.\n",
+        args = {"kwargs"}
+    )
+    public org.python.Object replace(java.util.Map<java.lang.String, org.python.Object> kwargs) {
+        String[] keys = { "year", "month", "day", "hour", "minute", "second", "microsecond" };
+        java.util.Map<java.lang.String, org.python.Object> new_kwargs = new HashMap<>();
+        Object[] args = new Object[0];
+        for (int i = 0; i < keys.length; i++){
+            new_kwargs.put(keys[i], org.python.types.Int.getInt(this.timeUnits[i]));
+            if (kwargs.get(keys[i]) != null){
+                if (kwargs.get(keys[i]) instanceof org.python.types.Str) {
+                    throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+                }
+                if (kwargs.get(keys[i]) instanceof org.python.types.Float) {
+                    throw new org.python.exceptions.TypeError("integer argument expected, got float");
+                }
+                // over-write
+                new_kwargs.put(keys[i],kwargs.get(keys[i]));
+            }
+        }
+        return new DateTime(args,new_kwargs);
     }
 
 }
