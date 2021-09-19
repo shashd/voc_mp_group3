@@ -292,7 +292,7 @@ public class Date extends org.python.types.Object {
             d = java.lang.Integer.parseInt(strSplit[2]);
         }
         catch(Exception e) {
-            throw new org.python.exceptions.TypeError("Year, month and date need to be integers");
+            throw new org.python.exceptions.TypeError("YYYY, MM and DD in YYYY-MM-DD need to be integers");
         }
 
         org.python.Object[] args = {org.python.types.Int.getInt(y), org.python.types.Int.getInt(m), org.python.types.Int.getInt(d)};

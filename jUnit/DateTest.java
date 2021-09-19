@@ -189,18 +189,18 @@ public class DateTest {
         Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1)};
         Date date = new Date(args,Collections.emptyMap());
 
-        Date newDate1 = date.fromisoformat(new org.python.types.Str("2019-12-04"));
-        y = ((Int) newDate1.year).value;
-        m = ((Int) newDate1.month).value;
-        d = ((Int) newDate1.day).value;
+        Date newDate = date.fromisoformat(new org.python.types.Str("2019-12-04"));
+        long y = ((Int) newDate.year).value;
+        long m = ((Int) newDate.month).value;
+        long d = ((Int) newDate.day).value;
         assertEquals(y, 2019);
         assertEquals(m, 12);
         assertEquals(d, 4);
 
-        Date newDate2 = date.fromisoformat(new org.python.types.Str("0200-02-11"));
-        y = ((Int) newDate2.year).value;
-        m = ((Int) newDate2.month).value;
-        d = ((Int) newDate2.day).value;
+        newDate = date.fromisoformat(new org.python.types.Str("0200-02-11"));
+        y = ((Int) newDate.year).value;
+        m = ((Int) newDate.month).value;
+        d = ((Int) newDate.day).value;
         assertEquals(y, 200);
         assertEquals(m, 2);
         assertEquals(d, 11);
