@@ -52,15 +52,28 @@ public class DateTime extends org.python.types.Object {
 
 	for (String key : keys) {
 	    if (kwargs.get(key) != null) {
-		this.timeUnits[keyIndex] = ((org.python.types.Int) kwargs.get(key)).value;
-		kwargsIsUsed = true;
+            if (kwargs.get(key) instanceof org.python.types.Str){
+                throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+            }
+            if (kwargs.get(key) instanceof org.python.types.Float){
+                throw new org.python.exceptions.TypeError("integer argument expected, got float");
+            }
+		    this.timeUnits[keyIndex] = ((org.python.types.Int) kwargs.get(key)).value;
+		    kwargsIsUsed = true;
 	    } else if (args.length > argIndex) {
-		if (kwargsIsUsed)
-		    throw new org.python.exceptions.SyntaxError("positional argument follows keyword argument");
-		this.timeUnits[keyIndex] = ((org.python.types.Int) args[argIndex]).value;
-		argIndex++;
+		    if (kwargsIsUsed) {
+                throw new org.python.exceptions.SyntaxError("positional argument follows keyword argument");
+            }
+            if (args[argIndex] instanceof org.python.types.Str){
+                throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+            }
+            if (args[argIndex] instanceof org.python.types.Float) {
+                throw new org.python.exceptions.TypeError("integer argument expected, got float");
+            }
+		    this.timeUnits[keyIndex] = ((org.python.types.Int) args[argIndex]).value;
+		    argIndex++;
 	    } else if (keyIndex < 3) {
-		throw new org.python.exceptions.TypeError("Required argument '" + keys[keyIndex] + "' (pos " + (keyIndex + 1) + ") not found");
+		    throw new org.python.exceptions.TypeError("Required argument '" + keys[keyIndex] + "' (pos " + (keyIndex + 1) + ") not found");
 	    }
 	    keyIndex++;
 	}

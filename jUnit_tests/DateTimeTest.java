@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.python.exceptions.BaseException;
 import org.python.stdlib.datetime.DateTime;
 
+import org.python.types.Float;
 import org.python.types.Int;
 import org.python.types.Str;
 import org.python.Object;
@@ -89,6 +90,16 @@ public class DateTimeTest {
         kwargs.put("microsecond",Int.getInt(2));
         dateTime = new DateTime(args,kwargs);
         testVariables(dateTime,args,kwargs);
+
+        // use different input types
+        kwargs.clear();
+        long year = 2000;
+        short month = 1;
+        byte day = 1;
+        args = new Object[]{ Int.getInt(year), Int.getInt(month), Int.getInt(day)};
+        dateTime = new DateTime(args,kwargs);
+        testVariables(dateTime,args,kwargs);
+
     }
 
     private void createErrorDateTime(Object[] args, HashMap<String, Object> kwargs, String errorMsg){
@@ -186,7 +197,14 @@ public class DateTimeTest {
         errorMsg = "microsecond 1000000is out of range";
         createErrorDateTime(args, kwargs, errorMsg);
 
-        // todo: with other types of inputs, no matter works or throws error
+        // use Str types and Float types as input
+        args = new Object[]{ new Str("2021"),  new Str("9"), new Str("1")};
+        errorMsg = "an integer is required (got type str)";
+        createErrorDateTime(args, kwargs, errorMsg);
+
+        args = new Object[]{ new Float(2021.0),  new Float(9.1), new Float(21.2)};
+        errorMsg = "integer argument expected, got float";
+        createErrorDateTime(args, kwargs, errorMsg);
 
     }
 
@@ -208,4 +226,13 @@ public class DateTimeTest {
         Str str = new Str(weekday + "");
         assertEquals("5", str.value);
     }
+
+    // implement function by TDD
+    // todo: test all python comparison operators
+
+    // todo: test class method
+
+    // todo: test instance method
+
+
 }
