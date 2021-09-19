@@ -2,6 +2,7 @@ import org.junit.jupiter.api.Test;
 import org.python.exceptions.BaseException;
 import org.python.stdlib.datetime.DateTime;
 
+import org.python.types.Bool;
 import org.python.types.Float;
 import org.python.types.Int;
 import org.python.types.Str;
@@ -9,7 +10,8 @@ import org.python.Object;
 import java.util.Collections;
 import java.util.HashMap;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+
 public class DateTimeTest {
 
     // writing some helper functions to generate args and kwargs
@@ -227,8 +229,100 @@ public class DateTimeTest {
         assertEquals("5", str.value);
     }
 
-    // implement function by TDD
-    // todo: test all python comparison operators
+    /**
+     * test all python comparison operators in python: == , != ,  > , < , >= , <=
+     */
+    @Test
+    public void testLt(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = ((Bool)dateTime1.__lt__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{ Int.getInt(2000),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = ((Bool)dateTime2.__lt__(dateTime3)).value;
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testLe(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = ((Bool)dateTime1.__le__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = ((Bool)dateTime3.__le__(dateTime2)).value;
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testEq(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = ((Bool)dateTime1.__eq__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = ((Bool)dateTime3.__eq__(dateTime2)).value;
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testNotEq(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = !((Bool)dateTime1.__eq__(dateTime2)).value;
+        assertFalse(actual);
+
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = !((Bool)dateTime3.__eq__(dateTime2)).value;
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testGt(){
+        Object[] args = { Int.getInt(2023),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = ((Bool)dateTime1.__gt__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{ Int.getInt(2000),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = ((Bool)dateTime3.__gt__(dateTime1)).value;
+        assertFalse(actual);
+    }
+
+    @Test
+    public void testGe(){
+        Object[] args = { Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime1 = new DateTime(args,Collections.emptyMap());
+        args = new Object[]{ Int.getInt(2021),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime2 = new DateTime(args,Collections.emptyMap());
+        boolean actual = ((Bool)dateTime1.__ge__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{ Int.getInt(2022),Int.getInt(9),Int.getInt(18)};
+        DateTime dateTime3 = new DateTime(args,Collections.emptyMap());
+        actual = ((Bool)dateTime2.__ge__(dateTime3)).value;
+        assertFalse(actual);
+    }
+
+
 
     // todo: test class method
 
