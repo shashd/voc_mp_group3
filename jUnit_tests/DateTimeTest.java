@@ -244,6 +244,11 @@ public class DateTimeTest {
         DateTime dateTime3 = new DateTime(args, Collections.emptyMap());
         actual = ((Bool) dateTime2.__lt__(dateTime3)).value;
         assertFalse(actual);
+
+        args = new Object[]{Int.getInt(2021), Int.getInt(9), Int.getInt(10)};
+        DateTime dateTime4 = new DateTime(args, Collections.emptyMap());
+        actual = ((Bool) dateTime1.__lt__(dateTime4)).value;
+        assertFalse(actual);
     }
 
     @Test
@@ -255,9 +260,14 @@ public class DateTimeTest {
         boolean actual = ((Bool) dateTime1.__le__(dateTime2)).value;
         assertTrue(actual);
 
-        args = new Object[]{Int.getInt(2022), Int.getInt(9), Int.getInt(18)};
+        args = new Object[]{Int.getInt(2021), Int.getInt(9), Int.getInt(22)};
         DateTime dateTime3 = new DateTime(args, Collections.emptyMap());
         actual = ((Bool) dateTime3.__le__(dateTime2)).value;
+        assertFalse(actual);
+
+        args = new Object[]{Int.getInt(2022), Int.getInt(9), Int.getInt(18)};
+        DateTime dateTime4 = new DateTime(args, Collections.emptyMap());
+        actual = ((Bool) dateTime4.__le__(dateTime2)).value;
         assertFalse(actual);
     }
 
@@ -315,14 +325,16 @@ public class DateTimeTest {
         boolean actual = ((Bool) dateTime1.__ge__(dateTime2)).value;
         assertTrue(actual);
 
-        args = new Object[]{Int.getInt(2022), Int.getInt(9), Int.getInt(18)};
+        args = new Object[]{Int.getInt(2021), Int.getInt(9), Int.getInt(22)};
         DateTime dateTime3 = new DateTime(args, Collections.emptyMap());
-        actual = ((Bool) dateTime2.__ge__(dateTime3)).value;
+        actual = ((Bool) dateTime3.__ge__(dateTime2)).value;
+        assertTrue(actual);
+
+        args = new Object[]{Int.getInt(2022), Int.getInt(9), Int.getInt(18)};
+        DateTime dateTime4 = new DateTime(args, Collections.emptyMap());
+        actual = ((Bool) dateTime2.__ge__(dateTime4)).value;
         assertFalse(actual);
     }
-
-
-    // todo: test class method
 
     /**
      * Test class method

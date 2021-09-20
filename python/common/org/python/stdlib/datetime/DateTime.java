@@ -301,47 +301,35 @@ public class DateTime extends org.python.types.Object {
     )
     public org.python.Object __le__(org.python.Object other){
         if (other instanceof DateTime){
-
-            if (((org.python.types.Bool)this.__year__().__le__(((DateTime) other).__year__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__year__().__gt__(((DateTime) other).__year__())).value){
+            if (((org.python.types.Bool)this.__year__().__gt__(((DateTime) other).__year__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__month__().__le__(((DateTime) other).__month__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__month__().__gt__(((DateTime) other).__month__())).value){
+            if (((org.python.types.Bool)this.__month__().__gt__(((DateTime) other).__month__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__day__().__le__(((DateTime) other).__day__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__day__().__gt__(((DateTime) other).__day__())).value){
+            if (((org.python.types.Bool)this.__day__().__gt__(((DateTime) other).__day__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__hour__().__le__(((DateTime) other).__hour__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__hour__().__gt__(((DateTime) other).__hour__())).value){
+            if (((org.python.types.Bool)this.__hour__().__gt__(((DateTime) other).__hour__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__minute__().__le__(((DateTime) other).__minute__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__minute__().__gt__(((DateTime) other).__minute__())).value){
+            if (((org.python.types.Bool)this.__minute__().__gt__(((DateTime) other).__minute__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__second__().__le__(((DateTime) other).__second__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__second__().__gt__(((DateTime) other).__second__())).value){
+            if (((org.python.types.Bool)this.__second__().__gt__(((DateTime) other).__second__())).value){
                 return org.python.types.Bool.getBool(false);
             }
-
-            if (((org.python.types.Bool)this.__microsecond__().__le__(((DateTime) other).__microsecond__())).value){
-                return org.python.types.Bool.getBool(true);
-            } else if (((org.python.types.Bool)this.__microsecond__().__gt__(((DateTime) other).__microsecond__())).value){
+            if (((org.python.types.Bool)this.__microsecond__().__gt__(((DateTime) other).__microsecond__())).value){
                 return org.python.types.Bool.getBool(false);
+            }
+            if (((org.python.types.Bool)this.__year__().__le__(((DateTime) other).__year__())).value &&
+                ((org.python.types.Bool)this.__month__().__le__(((DateTime) other).__month__())).value &&
+                ((org.python.types.Bool)this.__day__().__le__(((DateTime) other).__day__())).value &&
+                ((org.python.types.Bool)this.__hour__().__le__(((DateTime) other).__hour__())).value &&
+                ((org.python.types.Bool)this.__minute__().__le__(((DateTime) other).__minute__())).value &&
+                ((org.python.types.Bool)this.__second__().__le__(((DateTime) other).__second__())).value &&
+                ((org.python.types.Bool)this.__microsecond__().__le__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(true);
             }
             return org.python.types.Bool.getBool(false);
         }
@@ -431,43 +419,32 @@ public class DateTime extends org.python.types.Object {
 
             if (((org.python.types.Bool)this.__year__().__lt__(((DateTime) other).__year__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__year__().__ge__(((DateTime) other).__year__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__month__().__lt__(((DateTime) other).__month__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__month__().__ge__(((DateTime) other).__month__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__day__().__lt__(((DateTime) other).__day__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__day__().__ge__(((DateTime) other).__day__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__hour__().__lt__(((DateTime) other).__hour__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__hour__().__ge__(((DateTime) other).__hour__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__minute__().__lt__(((DateTime) other).__minute__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__minute__().__ge__(((DateTime) other).__minute__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__second__().__lt__(((DateTime) other).__second__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__second__().__ge__(((DateTime) other).__second__())).value){
-                return org.python.types.Bool.getBool(true);
             }
-
             if (((org.python.types.Bool)this.__microsecond__().__lt__(((DateTime) other).__microsecond__())).value){
                 return org.python.types.Bool.getBool(false);
-            } else if (((org.python.types.Bool)this.__microsecond__().__ge__(((DateTime) other).__microsecond__())).value){
+            }
+            if (((org.python.types.Bool)this.__year__().__ge__(((DateTime) other).__year__())).value &&
+                ((org.python.types.Bool)this.__month__().__ge__(((DateTime) other).__month__())).value &&
+                ((org.python.types.Bool)this.__day__().__ge__(((DateTime) other).__day__())).value &&
+                ((org.python.types.Bool)this.__hour__().__ge__(((DateTime) other).__hour__())).value &&
+                ((org.python.types.Bool)this.__minute__().__ge__(((DateTime) other).__minute__())).value &&
+                ((org.python.types.Bool)this.__second__().__ge__(((DateTime) other).__second__())).value &&
+                ((org.python.types.Bool)this.__microsecond__().__ge__(((DateTime) other).__microsecond__())).value){
                 return org.python.types.Bool.getBool(true);
             }
             return org.python.types.Bool.getBool(false);
