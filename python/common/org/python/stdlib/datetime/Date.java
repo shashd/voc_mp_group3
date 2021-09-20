@@ -301,6 +301,32 @@ public class Date extends org.python.types.Object {
         return new Date(args, Collections.emptyMap());
     }
 
+    public Date replace(org.python.types.Dict kwargs) {
+        long y = ((org.python.types.Int) this.year).value;
+        long m = ((org.python.types.Int) this.month).value;
+        long d = ((org.python.types.Int) this.day).value;
+        java.util.Map<org.python.Object,org.python.Object> kwargsMap = kwargs.value;
+        for(org.python.Object key: kwargsMap.keySet()) {
+            org.python.types.Str keyString = (org.python.types.Str) key;
+            org.python.Object obj = kwargsMap.get(keyString);
+            if (!(obj instanceof org.python.types.Int)) {
+                throw new org.python.exceptions.TypeError("an integer is required (got type " + obj.typeName() + ")");
+            }
+            long v = ((org.python.types.Int) obj).value;
+            if (keyString.value.equals("year"))
+                y = v;
+            else if (keyString.value.equals("month"))
+                m = v;
+            else if (keyString.value.equals("day"))
+                d = v;
+        }
+        org.python.types.Int year = org.python.types.Int.getInt(y);
+        org.python.types.Int month = org.python.types.Int.getInt(m);
+        org.python.types.Int day = org.python.types.Int.getInt(d);
+        org.python.Object[] args = { year, month, day };
+        return new Date(args, Collections.emptyMap());
+    }
+
     @org.python.Method(__doc__ = "return self less than other")
     public org.python.Object __lt__(org.python.Object other) {
         if ( other instanceof Date ){
@@ -323,38 +349,14 @@ public class Date extends org.python.types.Object {
         return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
     }
 
-    @org.python.Method(__doc__ = "return self less or equal to other")
-    public org.python.Object __le__(org.python.Object other) {
-        if ( other instanceof Date ){
-            Date otherDate = (Date) other;
-            if (((Bool) this.year.__le__(otherDate.year)).value){
-                if(((Bool) this.year.__lt__(otherDate.year)).value){
-                    return Bool.getBool(true);
-                }
-                else if(((Bool) this.year.__eq__(otherDate.year)).value){
-                    if (((Bool) this.month.__le__(otherDate.month)).value){
-                        if (((Bool) this.month.__lt__(otherDate.month)).value){
-                            return Bool.getBool(true);
-                        }else if (((Bool) this.month.__eq__(otherDate.month)).value){
-                            if(((Bool) this.day.__le__(otherDate.day)).value){
-                                return Bool.getBool(true);
-                                }
-                            }
-                            return Bool.getBool(false);
-                        }
-                    }
-                    return Bool.getBool(false);
-                }
-                return Bool.getBool(false);
-        }
-        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
-    }
-
     @org.python.Method(__doc__ = "return self equal to other")
     public org.python.Object __eq__(org.python.Object other) {
         if ( other instanceof Date ){
             Date otherDate = (Date) other;
-            if (((Bool) this.year.__eq__(otherDate.year)).value && ((Bool) this.month.__eq__(otherDate.month)).value && ((Bool) this.day.__eq__(otherDate.day)).value){
+            boolean yearIsEqual =  ((Bool) this.year.__eq__(otherDate.year)).value;
+            boolean monthIsEqual = ((Bool) this.month.__eq__(otherDate.month)).value;
+            boolean dayIsEqual = ((Bool) this.day.__eq__(otherDate.day)).value;
+            if ( yearIsEqual && monthIsEqual && dayIsEqual ){
                 return Bool.getBool(true);
             }
             return Bool.getBool(false);
@@ -362,4 +364,53 @@ public class Date extends org.python.types.Object {
         return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
     }
 
+    @org.python.Method(__doc__ = "return self less or equal to other")
+    public org.python.Object __le__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.__lt__(otherDate)).value || ((Bool) this.__eq__(otherDate)).value) {
+                return Bool.getBool(true);
+            }
+            else {
+                return Bool.getBool(false);
+            }
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(__doc__ = "return self greater than other")
+    public org.python.Object __gt__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.year.__gt__(otherDate.year)).value){
+                return Bool.getBool(true);
+            }else if(((Bool) this.year.__eq__(otherDate.year)).value){
+                if (((Bool) this.month.__gt__(otherDate.month)).value){
+                    return Bool.getBool(true);
+                }else if (((Bool) this.month.__eq__(otherDate.month)).value){
+                    if (((Bool) this.day.__gt__(otherDate.day)).value){
+                        return Bool.getBool(true);
+                    }
+                    return Bool.getBool(false);
+                }
+                return Bool.getBool(false);
+            }
+            return Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(__doc__ = "return self greater than or equal other")
+    public org.python.Object __ge__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.__gt__(otherDate)).value || ((Bool) this.__eq__(otherDate)).value) {
+                return Bool.getBool(true);
+            }
+            else {
+                return Bool.getBool(false);
+            }
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
 }

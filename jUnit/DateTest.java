@@ -5,10 +5,12 @@ import org.python.exceptions.BaseException;
 import org.python.stdlib.datetime.Date;
 import org.python.types.*;
 import org.python.types.Bool;
+import org.python.types.Float;
 import org.python.types.Str;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTest {
@@ -413,5 +415,40 @@ public class DateTest {
         assertEquals(isDate1LessThanDate8.value, true );
 
         assertEquals(date1.__eq__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
+
+    @Test
+    public void testDateReplace() {
+        Object[] args = { Int.getInt(2000), Int.getInt(2), Int.getInt(1) };
+        Date date = new Date(args, Collections.emptyMap());
+        Map<Object, Object> dict = new HashMap<>();
+        dict.put(new Str("day"), Int.getInt(12));
+        dict.put(new Str("month"), Int.getInt(12));
+        dict.put(new Str("year"), Int.getInt(2021));
+        Dict kwargs = new Dict(dict);
+        Date newDate = date.replace(kwargs);
+        long y = ((Int) newDate.year).value;
+        long m = ((Int) newDate.month).value;
+        long d = ((Int) newDate.day).value;
+        assertEquals(y, 2021);
+        assertEquals(m, 12);
+        assertEquals(d, 12);
+
+        dict.replace(new Str("year"), new org.python.types.Float(12.0));
+        kwargs = new Dict(dict);
+
+        try {
+            newDate = date.replace(kwargs);
+        } catch (BaseException exception) {
+            assertEquals("an integer is required (got type float)", exception.getMessage());
+        }
+    }
+
+    @Test
+    public void testWeekday() {
+        Object[] args = { Int.getInt(2000), Int.getInt(2), Int.getInt(1) };
+        Date date = new Date(args, Collections.emptyMap());
+        Int i = (Int)date.weekday();
+        assertEquals(i.value, 1);
     }
 }
