@@ -2,6 +2,7 @@ package org.python.stdlib.datetime;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public class TimeDelta extends org.python.types.Object {
@@ -34,58 +35,44 @@ public class TimeDelta extends org.python.types.Object {
             throw new org.python.exceptions.TypeError("__new__() takes at most 7 arguments (" + args.length + " given)");
         }
 
-        String[] allowed = { "days", "seconds", "microseconds", "milliseconds", "minutes", "hours", "weeks" };
-        List<String> allowedList = Arrays.asList(allowed);
+        String[] argumentNames = { "days", "seconds", "microseconds", "milliseconds", "minutes", "hours", "weeks" };
+        List<String> allowedList = Arrays.asList(argumentNames);
         if (!kwargs.isEmpty()) {
-            boolean correct = true;
             for (java.lang.String key : kwargs.keySet()) {
-                correct = allowedList.contains(key);
+                boolean correct = allowedList.contains(key);
                 if (!correct) {
-                    throw new org.python.exceptions.TypeError(key + " is an invalid keuword argument for this function");
+                    throw new org.python.exceptions.TypeError(key + " is an invalid keyword argument for this function");
                 }
             }
-            if (args.length > 0) {
-                if (kwargs.get("days") != null && args.length >= 1) {
-                    throw new org.python.exceptions.TypeError("Argument given by name ('days') and position (1)");
-                }
-
-                if (kwargs.get("seconds") != null && args.length >= 2) {
-                    throw new org.python.exceptions.TypeError("Argument given by name ('seconds') and position (2)");
-                }
-
-                if (kwargs.get("microseconds") != null && args.length >= 3) {
-                    throw new org.python.exceptions.TypeError("Argument given by name ('microseconds') and position (3)");
+            for (int i=0; i < args.length;i++) {
+                // If defined by position and kwarg, throw exception
+                if (kwargs.get(argumentNames[i]) != null) {
+                    throw new org.python.exceptions.TypeError("argument for __new__() given by name ('" + argumentNames[i] + "') and position (" + (i+1) + ")");
                 }
             }
         }
+        // Make a copy of kwargs so we can add things to it
+        kwargs = new HashMap<>(kwargs);
 
-        if (args.length == 3) {
-            this.days = args[0];
-            this.seconds = args[1];
-            this.microseconds = args[2];
-        } else if (args.length == 2) {
-            this.days = args[0];
-            this.seconds = args[1];
-            this.microseconds = org.python.types.Int.getInt(0);
+        // Add any non kwarg argument as a kwarg
+        for (int i=0; i < args.length;i++) {
+            kwargs.put(argumentNames[i], args[i]);
+        }
 
-        } else if (args.length == 1) {
-            this.days = args[0];
-            this.seconds = org.python.types.Int.getInt(0);
-            this.microseconds = org.python.types.Int.getInt(0);
-
+        if (kwargs.get("days") != null) {
+            this.days = kwargs.get("days");
+        }
+        if (kwargs.get("seconds") != null) {
+            this.seconds = kwargs.get("seconds");
+        }
+        if (kwargs.get("microseconds") != null) {
+            this.microseconds = kwargs.get("microseconds");
         }
 
         if (kwargs.get("weeks") != null) {
             long weeks = ((org.python.types.Int) kwargs.get("weeks")).value;
             long day = ((org.python.types.Int) this.days).value;
             day = day + weeks * 7;
-            this.days = org.python.types.Int.getInt(day);
-        }
-
-        if (kwargs.get("days") != null) {
-            long newDay = ((org.python.types.Int) kwargs.get("days")).value;
-            long day = ((org.python.types.Int) this.days).value;
-            day = day + newDay;
             this.days = org.python.types.Int.getInt(day);
         }
 
