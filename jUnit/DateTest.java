@@ -1,13 +1,39 @@
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.python.Object;
 import org.python.exceptions.BaseException;
 import org.python.stdlib.datetime.Date;
 import org.python.types.*;
+import org.python.types.Bool;
+import org.python.types.Str;
+
 import java.util.Collections;
 import java.util.HashMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DateTest {
+    private static Date date1, date2, date3, date4, date5, date6, date7, date8;
+    @BeforeAll
+    public static void setup() {
+        Object[] args1 = {Int.getInt(1999), Int.getInt(2), Int.getInt(2)};
+        Object[] args2 = {Int.getInt(1998), Int.getInt(2), Int.getInt(2)};
+        Object[] args3 = {Int.getInt(1999), Int.getInt(3), Int.getInt(2)};
+        Object[] args4 = {Int.getInt(1999), Int.getInt(1), Int.getInt(2)};
+        Object[] args5 = {Int.getInt(2000), Int.getInt(2), Int.getInt(2)};
+        Object[] args6 = {Int.getInt(1999), Int.getInt(2), Int.getInt(1)};
+        Object[] args7 = {Int.getInt(1999), Int.getInt(2), Int.getInt(3)};
+        Object[] args8 = {Int.getInt(1999), Int.getInt(2), Int.getInt(2)};
+
+
+        date1 = new Date(args1, Collections.emptyMap());
+        date2 = new Date(args2, Collections.emptyMap());
+        date3 = new Date(args3, Collections.emptyMap());
+        date4 = new Date(args4, Collections.emptyMap());
+        date5 = new Date(args5, Collections.emptyMap());
+        date6 = new Date(args6, Collections.emptyMap());
+        date7 = new Date(args7, Collections.emptyMap());
+        date8 = new Date(args8, Collections.emptyMap());
+    }
 
     @Test
     public void testConstructor() {
@@ -58,7 +84,7 @@ public class DateTest {
     @Test
     public void testConstructorFail() {
 
-//      when  args.length + kwargs.size() == 3
+        //  when  args.length + kwargs.size() == 3
         Object[] args = {Int.getInt(2000), Int.getInt(2), Int.getInt(1), Int.getInt(4)};
         createErrorDate(args, Collections.emptyMap(), "function takes at most 3 arguments (4 given)");
 
@@ -242,6 +268,7 @@ public class DateTest {
             assertEquals("YYYY, MM and DD in YYYY-MM-DD need to be integers", exception.getMessage());
         }
     }
+
     @Test
     public void testToday(){
 
@@ -257,5 +284,134 @@ public class DateTest {
         assertEquals(((Int) today.day).value, d);
     }
 
+    @Test
+    public void test__lt__(){
+        Bool isDate1LessThanDate2 = (Bool) date1.__lt__(date2);
+        assertEquals(isDate1LessThanDate2.value, false );
 
+        Bool isDate1LessThanDate3 = (Bool) date1.__lt__(date3);
+        assertEquals(isDate1LessThanDate3.value, true );
+
+        Bool isDate1LessThanDate4 = (Bool) date1.__lt__(date4);
+        assertEquals(isDate1LessThanDate4.value, false );
+
+        Bool isDate1LessThanDate5 = (Bool) date1.__lt__(date5);
+        assertEquals(isDate1LessThanDate5.value, true );
+
+        Bool isDate1LessThanDate6 = (Bool) date1.__lt__(date6);
+        assertEquals(isDate1LessThanDate6.value, false );
+
+        Bool isDate1LessThanDate7 = (Bool) date1.__lt__(date7);
+        assertEquals(isDate1LessThanDate7.value, true );
+
+        Bool isDate1LessThanDate8 = (Bool) date1.__lt__(date8);
+        assertEquals(isDate1LessThanDate8.value, false );
+
+        assertEquals(date1.__lt__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
+
+    @Test
+    public void test__le__(){
+        Bool isDate1LessThanDate2 = (Bool) date1.__le__(date2);
+        assertEquals(isDate1LessThanDate2.value, false );
+
+        Bool isDate1LessThanDate3 = (Bool) date1.__le__(date3);
+        assertEquals(isDate1LessThanDate3.value, true );
+
+        Bool isDate1LessThanDate4 = (Bool) date1.__le__(date4);
+        assertEquals(isDate1LessThanDate4.value, false );
+
+        Bool isDate1LessThanDate5 = (Bool) date1.__le__(date5);
+        assertEquals(isDate1LessThanDate5.value, true );
+
+        Bool isDate1LessThanDate6 = (Bool) date1.__le__(date6);
+        assertEquals(isDate1LessThanDate6.value, false );
+
+        Bool isDate1LessThanDate7 = (Bool) date1.__le__(date7);
+        assertEquals(isDate1LessThanDate7.value, true );
+
+        Bool isDate1LessThanDate8 = (Bool) date1.__le__(date8);
+        assertEquals(isDate1LessThanDate8.value, true );
+
+        assertEquals(date1.__le__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
+
+    @Test
+    public void test__gt__(){
+        Bool isDate1LessThanDate2 = (Bool) date1.__gt__(date2);
+        assertEquals(isDate1LessThanDate2.value, true );
+
+        Bool isDate1LessThanDate3 = (Bool) date1.__gt__(date3);
+        assertEquals(isDate1LessThanDate3.value, false );
+
+        Bool isDate1LessThanDate4 = (Bool) date1.__gt__(date4);
+        assertEquals(isDate1LessThanDate4.value, true );
+
+        Bool isDate1LessThanDate5 = (Bool) date1.__gt__(date5);
+        assertEquals(isDate1LessThanDate5.value, false );
+
+        Bool isDate1LessThanDate6 = (Bool) date1.__gt__(date6);
+        assertEquals(isDate1LessThanDate6.value, true );
+
+        Bool isDate1LessThanDate7 = (Bool) date1.__gt__(date7);
+        assertEquals(isDate1LessThanDate7.value, false );
+
+        Bool isDate1LessThanDate8 = (Bool) date1.__gt__(date8);
+        assertEquals(isDate1LessThanDate8.value, false );
+
+        assertEquals(date1.__gt__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
+
+    @Test
+    public void test__ge__(){
+        Bool isDate1LessThanDate2 = (Bool) date1.__ge__(date2);
+        assertEquals(isDate1LessThanDate2.value, true );
+
+        Bool isDate1LessThanDate3 = (Bool) date1.__ge__(date3);
+        assertEquals(isDate1LessThanDate3.value, false );
+
+        Bool isDate1LessThanDate4 = (Bool) date1.__ge__(date4);
+        assertEquals(isDate1LessThanDate4.value, true );
+
+        Bool isDate1LessThanDate5 = (Bool) date1.__ge__(date5);
+        assertEquals(isDate1LessThanDate5.value, false );
+
+        Bool isDate1LessThanDate6 = (Bool) date1.__ge__(date6);
+        assertEquals(isDate1LessThanDate6.value, true );
+
+        Bool isDate1LessThanDate7 = (Bool) date1.__ge__(date7);
+        assertEquals(isDate1LessThanDate7.value, false );
+
+        Bool isDate1LessThanDate8 = (Bool) date1.__ge__(date8);
+        assertEquals(isDate1LessThanDate8.value, true );
+
+        assertEquals(date1.__ge__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
+
+
+    @Test
+    public void test__eq__(){
+        Bool isDate1LessThanDate2 = (Bool) date1.__eq__(date2);
+        assertEquals(isDate1LessThanDate2.value, false );
+
+        Bool isDate1LessThanDate3 = (Bool) date1.__eq__(date3);
+        assertEquals(isDate1LessThanDate3.value, false );
+
+        Bool isDate1LessThanDate4 = (Bool) date1.__eq__(date4);
+        assertEquals(isDate1LessThanDate4.value, false );
+
+        Bool isDate1LessThanDate5 = (Bool) date1.__eq__(date5);
+        assertEquals(isDate1LessThanDate5.value, false );
+
+        Bool isDate1LessThanDate6 = (Bool) date1.__eq__(date6);
+        assertEquals(isDate1LessThanDate6.value, false );
+
+        Bool isDate1LessThanDate7 = (Bool) date1.__eq__(date7);
+        assertEquals(isDate1LessThanDate7.value, false );
+
+        Bool isDate1LessThanDate8 = (Bool) date1.__eq__(date8);
+        assertEquals(isDate1LessThanDate8.value, true );
+
+        assertEquals(date1.__eq__(new Str("1999-01-01")), org.python.types.NotImplementedType.NOT_IMPLEMENTED);
+    }
 }

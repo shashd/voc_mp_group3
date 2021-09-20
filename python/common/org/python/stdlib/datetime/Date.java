@@ -1,5 +1,7 @@
 package org.python.stdlib.datetime;
 
+import org.python.types.Bool;
+
 import java.util.Collections;
 
 public class Date extends org.python.types.Object {
@@ -299,5 +301,65 @@ public class Date extends org.python.types.Object {
         return new Date(args, Collections.emptyMap());
     }
 
-	
+    @org.python.Method(__doc__ = "return self less than other")
+    public org.python.Object __lt__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.year.__lt__(otherDate.year)).value){
+                return Bool.getBool(true);
+            }else if(((Bool) this.year.__eq__(otherDate.year)).value){
+                if (((Bool) this.month.__lt__(otherDate.month)).value){
+                    return Bool.getBool(true);
+                }else if (((Bool) this.month.__eq__(otherDate.month)).value){
+                    if (((Bool) this.day.__lt__(otherDate.day)).value){
+                        return Bool.getBool(true);
+                    }
+                    return Bool.getBool(false);
+                }
+                return Bool.getBool(false);
+            }
+            return Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(__doc__ = "return self less or equal to other")
+    public org.python.Object __le__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.year.__le__(otherDate.year)).value){
+                if(((Bool) this.year.__lt__(otherDate.year)).value){
+                    return Bool.getBool(true);
+                }
+                else if(((Bool) this.year.__eq__(otherDate.year)).value){
+                    if (((Bool) this.month.__le__(otherDate.month)).value){
+                        if (((Bool) this.month.__lt__(otherDate.month)).value){
+                            return Bool.getBool(true);
+                        }else if (((Bool) this.month.__eq__(otherDate.month)).value){
+                            if(((Bool) this.day.__le__(otherDate.day)).value){
+                                return Bool.getBool(true);
+                                }
+                            }
+                            return Bool.getBool(false);
+                        }
+                    }
+                    return Bool.getBool(false);
+                }
+                return Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(__doc__ = "return self equal to other")
+    public org.python.Object __eq__(org.python.Object other) {
+        if ( other instanceof Date ){
+            Date otherDate = (Date) other;
+            if (((Bool) this.year.__eq__(otherDate.year)).value && ((Bool) this.month.__eq__(otherDate.month)).value && ((Bool) this.day.__eq__(otherDate.day)).value){
+                return Bool.getBool(true);
+            }
+            return Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
 }
