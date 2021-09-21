@@ -1,5 +1,8 @@
 package org.python.stdlib.datetime;
 
+import org.python.Object;
+import org.python.exceptions.TypeError;
+import org.python.types.Bool;
 import org.python.types.Int;
 
 import java.util.Arrays;
@@ -19,11 +22,21 @@ public class TimeDelta extends org.python.types.Object {
     public org.python.Object microseconds = __microseconds__();
 
     @org.python.Attribute
-    public org.python.Object min = __min__();
+    public static org.python.Object min = __min__();
     @org.python.Attribute
     public org.python.Object max = __max__();
     @org.python.Attribute
     public org.python.Object resolution = __resolution__();
+
+    /**
+     * Convenience constructor
+     * @param days
+     * @param seconds
+     * @param microseconds
+     */
+    private TimeDelta(long days, long seconds, long microseconds) {
+        this( new Object[] { Int.getInt(days),Int.getInt(seconds), Int.getInt(microseconds) }, Collections.emptyMap());
+    }
 
     @org.python.Method(__doc__ = "")
     public TimeDelta(org.python.Object[] args, java.util.Map<java.lang.String, org.python.Object> kwargs) {
@@ -118,8 +131,8 @@ public class TimeDelta extends org.python.types.Object {
     }
 
     @org.python.Method()
-    public org.python.Object __min__() {
-        return new org.python.types.Str("-999999 days, 0:00:00");
+    public static org.python.Object __min__() {
+        return new TimeDelta(new Object[] {Int.getInt(-999999)}, Collections.emptyMap());
     }
 
     @org.python.Method()
@@ -159,27 +172,126 @@ public class TimeDelta extends org.python.types.Object {
 
     @org.python.Method(__doc__ = "", args = { "other" })
     public org.python.Object __add__(org.python.Object other) {
-        long thisDays = ((org.python.types.Int) this.days).value;
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("unsupported operand type(s) for +: 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        TimeDelta otherObject = (TimeDelta)other;
+
+        return new TimeDelta(
+            ((Int)days).value + ((Int)otherObject.days).value,
+            ((Int)seconds).value + ((Int)otherObject.seconds).value,
+            ((Int)microseconds).value + ((Int)otherObject.microseconds).value
+        );
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __sub__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("unsupported operand type(s) for -: 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        TimeDelta otherObject = (TimeDelta)other;
+
+        return new TimeDelta(
+            ((Int)days).value - ((Int)otherObject.days).value,
+            ((Int)seconds).value - ((Int)otherObject.seconds).value,
+            ((Int)microseconds).value - ((Int)otherObject.microseconds).value
+        );
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __eq__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            return Bool.getBool(false);
+        }
+
         TimeDelta otherObject = (org.python.stdlib.datetime.TimeDelta) other;
-        long otherDays = ((org.python.types.Int) otherObject.days).value;
-        long thisSeconds = ((org.python.types.Int) this.seconds).value;
-        long otherSeconds = ((org.python.types.Int) otherObject.seconds).value;
-        long thisMicroseconds = ((org.python.types.Int) this.microseconds).value;
-        long otherMicroSeconds = ((org.python.types.Int) otherObject.microseconds).value;
-        long sumDays = thisDays + otherDays;
-        long sumSeconds = thisSeconds + otherSeconds;
-        long sumMicroseconds = thisMicroseconds + otherMicroSeconds;
-        org.python.Object[] args = { org.python.types.Int.getInt(sumDays), org.python.types.Int.getInt(sumSeconds), org.python.types.Int.getInt(sumMicroseconds) };
-        TimeDelta TD = new TimeDelta(args, Collections.EMPTY_MAP);
-        return TD;
+        return Bool.getBool(
+            this.days.equals(otherObject.days) &&
+            this.seconds.equals(otherObject.seconds) &&
+            this.microseconds.equals(otherObject.microseconds)
+        );
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __ne__(org.python.Object other) {
+        // By definition, not equals is the reverse of equals
+        Bool equals = (Bool)__eq__(other);
+        return Bool.getBool(!equals.value);
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __lt__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("'<' not supported between instances of 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        TimeDelta otherObject = (org.python.stdlib.datetime.TimeDelta) other;
+        if ( ((Int)days).value < ((Int)otherObject.days).value  ) {
+            return Bool.getBool(true);
+        }
+        if ( ((Int)seconds).value < ((Int)otherObject.seconds).value  ) {
+            return Bool.getBool(true);
+        }
+        if ( ((Int)microseconds).value < ((Int)otherObject.microseconds).value  ) {
+            return Bool.getBool(true);
+        }
+        return Bool.getBool(false);
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __le__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("'<=' not supported between instances of 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        // Less or equal is quite literally less or equal so
+        Bool eqResult = (Bool)__eq__(other);
+        Bool ltResult = (Bool)__lt__(other);
+        return Bool.getBool( eqResult.value || ltResult.value );
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __gt__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("'>' not supported between instances of 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        TimeDelta otherObject = (org.python.stdlib.datetime.TimeDelta) other;
+        if ( ((Int)days).value > ((Int)otherObject.days).value  ) {
+            return Bool.getBool(true);
+        }
+        if ( ((Int)seconds).value > ((Int)otherObject.seconds).value  ) {
+            return Bool.getBool(true);
+        }
+        if ( ((Int)microseconds).value > ((Int)otherObject.microseconds).value  ) {
+            return Bool.getBool(true);
+        }
+        return Bool.getBool(false);
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __ge__(org.python.Object other) {
+        if (!(other instanceof TimeDelta)) {
+            throw new TypeError("'<=' not supported between instances of 'datetime.timedelta' and '" + other.typeName() + "'");
+        }
+
+        // Greater or equal is quite literally greater or equal so
+        Bool eqResult = (Bool)__eq__(other);
+        Bool gtResult = (Bool)__gt__(other);
+        return Bool.getBool( eqResult.value || gtResult.value );
     }
 
     public org.python.Object __pos__() {
         long otherSeconds = ((org.python.types.Int) this.seconds).value;
         long otherMicroSeconds = ((org.python.types.Int) this.microseconds).value;
         long otherDays = ((org.python.types.Int) this.days).value;
-        org.python.Object[] args = { org.python.types.Int.getInt(otherDays), org.python.types.Int.getInt(otherSeconds), org.python.types.Int.getInt(otherMicroSeconds) };
-        TimeDelta TD = new TimeDelta(args, Collections.EMPTY_MAP);
+        org.python.Object[] args = {
+            org.python.types.Int.getInt(otherDays),
+            org.python.types.Int.getInt(otherSeconds),
+            org.python.types.Int.getInt(otherMicroSeconds) };
+        TimeDelta TD = new TimeDelta(args, Collections.emptyMap());
         return TD;
     }
 
@@ -190,11 +302,6 @@ public class TimeDelta extends org.python.types.Object {
         long microseconds = ((org.python.types.Int) this.microseconds).value;
         String returnStr = days + " days, " + "seconds: " + seconds + ", microseconds: " + microseconds;
         return new org.python.types.Str(returnStr);
-    }
-
-    @org.python.Method(__doc__ = "")
-    public static org.python.Object constant_4() {
-	return org.python.types.Int.getInt(4);
     }
 
     /**

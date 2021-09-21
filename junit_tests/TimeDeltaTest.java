@@ -2,14 +2,21 @@ import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.python.Object;
 import org.python.stdlib.datetime.TimeDelta;
+import org.python.types.Bool;
 import org.python.types.Int;
+import org.python.types.Str;
 
+import java.util.Collections;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimeDeltaTest {
+
+    private TimeDelta constructTimeDelta(long days, long seconds, long microseconds) {
+        return new TimeDelta(new Object[] {Int.getInt(days), Int.getInt(seconds), Int.getInt(microseconds)}, Collections.emptyMap());
+    }
 
     @Test
     public void testConstructor() {
@@ -142,4 +149,139 @@ public class TimeDeltaTest {
         }
     }
 
+    @Test
+    public void testEquals() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 3);
+
+            assertEquals(Bool.getBool(true), td0.__eq__(td1));
+            assertEquals(Bool.getBool(true), td1.__eq__(td0));
+        }
+
+        {
+
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+
+            // Microseconds different
+            TimeDelta td1 = constructTimeDelta(1, 2, 2);
+            // Seconds different
+            TimeDelta td2 = constructTimeDelta(1, 1, 3);
+            // days different
+            TimeDelta td3 = constructTimeDelta(0, 2, 3);
+
+            assertEquals(Bool.getBool(false), td0.__eq__(td1));
+            assertEquals(Bool.getBool(false), td1.__eq__(td0));
+
+            assertEquals(Bool.getBool(false), td0.__eq__(td2));
+            assertEquals(Bool.getBool(false), td2.__eq__(td0));
+
+            assertEquals(Bool.getBool(false), td0.__eq__(td3));
+            assertEquals(Bool.getBool(false), td3.__eq__(td0));
+        }
+
+        {
+            TimeDelta td = constructTimeDelta(0, 0, 1);
+
+            assertEquals(Bool.getBool(false), td.__eq__( Int.getInt(1) ));
+            assertEquals(Bool.getBool(false), td.__eq__( new Str("1") ));
+        }
+    }
+
+    @Test
+    public void testNotEquals() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 =constructTimeDelta(0, 2, 3);
+
+            assertEquals(Bool.getBool(true), td0.__ne__(td1));
+            assertEquals(Bool.getBool(true), td1.__ne__(td0));
+        }
+    }
+
+    @Test
+    public void testLesserThan() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 4);
+
+            assertEquals(Bool.getBool(true), td0.__lt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 3);
+
+            assertEquals(Bool.getBool(false), td0.__lt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 20000, 300000);
+            TimeDelta td1 = constructTimeDelta(2, 0, 0);
+
+            assertEquals(Bool.getBool(true), td0.__lt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+
+            Assert.assertThrows(Exception.class, () -> td0.__lt__( Int.getInt(1) ));
+        }
+    }
+
+    @Test
+    public void testLessOrEqualThan() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 4);
+
+            assertEquals(Bool.getBool(true), td0.__le__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 3);
+
+            assertEquals(Bool.getBool(true), td0.__le__(td1));
+        }
+    }
+
+    @Test
+    public void testGreaterThan() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 2);
+
+            assertEquals(Bool.getBool(true), td0.__gt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 3);
+
+            assertEquals(Bool.getBool(false), td0.__gt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 0, 0);
+            TimeDelta td1 = constructTimeDelta(0, 20000, 300000);
+
+            assertEquals(Bool.getBool(true), td0.__gt__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+
+            Assert.assertThrows(Exception.class, () -> td0.__gt__( Int.getInt(1) ));
+        }
+    }
+
+    @Test
+    public void testGreaterOrEqualThan() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 2);
+
+            assertEquals(Bool.getBool(true), td0.__ge__(td1));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(1, 2, 3);
+
+            assertEquals(Bool.getBool(true), td0.__ge__(td1));
+        }
+    }
 }
