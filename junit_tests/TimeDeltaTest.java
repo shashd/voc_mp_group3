@@ -403,4 +403,92 @@ public class TimeDeltaTest {
             Assert.assertThrows(Exception.class, () -> td0.__mul__(td1 ));
         }
     }
+
+    @Test
+    public void testTotalSeconds() {
+        {
+            TimeDelta td0 = constructTimeDelta(0, 1, 0);
+            Float result = new Float(1);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 0, 0);
+            Float result = new Float(60*60*24);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 1000000);
+            Float result = new Float(1);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 100000);
+            Float result = new Float(0.1);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 1);
+            Float result = new Float(0.000001);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(999999999, 3600*24, 1000000);
+            Float result = new Float(86400000000001.0);
+
+            assertEquals(result, td0.total_seconds());
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(-999999999, 0, 0);
+            Float result = new Float(-86399999913600.0);
+
+            assertEquals(result, td0.total_seconds());
+        }
+    }
+
+    @Test
+    public void testPos() {
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 0);
+
+            TimeDelta sum = (TimeDelta)td0.__pos__();
+
+            assertEquals(Int.getInt(0), sum.days);
+            assertEquals(Int.getInt(0), sum.seconds);
+            assertEquals(Int.getInt(0), sum.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(999999999, 3600*24, 1000000);
+
+            TimeDelta pos = (TimeDelta)td0.__pos__();
+
+            assertEquals(Int.getInt(1000000000), pos.days);
+            assertEquals(Int.getInt(1), pos.seconds);
+            assertEquals(Int.getInt(0), pos.microseconds);
+        }
+    }
+
+    @Test
+    public void testStr() {
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 0);
+
+            Str resultString = td0.__str__();
+            Str comp = new Str("0 days, seconds: 0, microseconds: 0");
+
+            assertTrue(resultString.equals(comp));
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(999999999, 3600*24, 1000000);
+
+            Str resultString = td0.__str__();
+            Str comp = new Str("1000000000 days, seconds: 1, microseconds: 0");
+
+            assertTrue(resultString.equals(comp));
+        }
+    }
 }

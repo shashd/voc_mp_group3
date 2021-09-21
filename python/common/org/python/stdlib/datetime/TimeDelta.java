@@ -147,28 +147,12 @@ public class TimeDelta extends org.python.types.Object {
     }
 
     @org.python.Method()
-    public org.python.types.Str total_seconds() {
-        long days = (((org.python.types.Int) this.days).value) * 24 * 3600;
-        long sum_seconds = days + (((org.python.types.Int) this.seconds).value);
-        long microseconds = (((org.python.types.Int) this.microseconds).value);
-        String micro = "";
-        if (microseconds == 0) {
-            micro = "0";
-        } else if (microseconds < 10) {
-            micro = "00000" + microseconds;
-        } else if (microseconds < 100) {
-            micro = "0000" + microseconds;
-        } else if (microseconds < 1000) {
-            micro = "000" + microseconds;
-        } else if (microseconds < 10000) {
-            micro = "00" + microseconds;
-        } else if (microseconds < 100000) {
-            micro = "0" + microseconds;
-        } else {
-            micro = "" + microseconds;
-        }
-        String returnStr = ("" + sum_seconds + "." + micro);
-        return new org.python.types.Str(returnStr);
+    public org.python.types.Float total_seconds() {
+        double days = (((org.python.types.Int) this.days).value) * 24 * 3600;
+        double sum_seconds = days + (((org.python.types.Int) this.seconds).value);
+        double microseconds = (((org.python.types.Int) this.microseconds).value);
+        double returnFloat = sum_seconds + microseconds/1000000;
+        return new org.python.types.Float(returnFloat);
     }
 
     @org.python.Method(__doc__ = "", args = { "other" })
