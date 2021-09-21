@@ -87,15 +87,15 @@ public class TimeDelta extends org.python.types.Object {
 
         if (kwargs.get("minutes") != null) {
             long minutes = ((org.python.types.Int) kwargs.get("minutes")).value;
-            long minute = ((org.python.types.Int) this.seconds).value;
-            minute = minute + minutes * 60;
-            this.seconds = org.python.types.Int.getInt(minute);
+            long seconds = ((org.python.types.Int) this.seconds).value;
+            seconds = seconds + minutes * 60;
+            this.seconds = org.python.types.Int.getInt(seconds);
         }
 
         if (kwargs.get("milliseconds") != null) {
             long millisecond = ((org.python.types.Int) kwargs.get("milliseconds")).value;
             long mili = ((org.python.types.Int) this.microseconds).value;
-            mili = mili + millisecond * 100;
+            mili = mili + millisecond * 1000;
             this.microseconds = org.python.types.Int.getInt(mili);
         }
 

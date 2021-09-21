@@ -1,3 +1,4 @@
+import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.python.Object;
 import org.python.stdlib.datetime.TimeDelta;
@@ -6,6 +7,7 @@ import org.python.types.Int;
 import java.util.HashMap;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class TimeDeltaTest {
 
@@ -37,6 +39,64 @@ public class TimeDeltaTest {
             TimeDelta timeDelta = new TimeDelta(new Object[] {Int.getInt(3) }, kwargs);
 
             assertEquals(org.python.types.Int.getInt(10), timeDelta.days);
+        }
+
+        {
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("hours", org.python.types.Int.getInt(24));
+            TimeDelta timeDelta = new TimeDelta(new Object[0], kwargs);
+
+            assertEquals(org.python.types.Int.getInt(1), timeDelta.days);
+        }
+
+        {
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("minutes", org.python.types.Int.getInt(12));
+            TimeDelta timeDelta = new TimeDelta(new Object[0], kwargs);
+
+            assertEquals(org.python.types.Int.getInt(12*60), timeDelta.seconds);
+        }
+
+        {
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("milliseconds", org.python.types.Int.getInt(1_001));
+            TimeDelta timeDelta = new TimeDelta(new Object[0], kwargs);
+
+            assertEquals(org.python.types.Int.getInt(1), timeDelta.seconds);
+            assertEquals(org.python.types.Int.getInt(1000), timeDelta.microseconds);
+        }
+
+        {
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("incorrect parameter", org.python.types.Int.getInt(1));
+            Assert.assertThrows(Exception.class, () -> new TimeDelta(new Object[0], kwargs));
+        }
+
+        { // This test defines days two ways, which should throw
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("days", org.python.types.Int.getInt(1));
+            Assert.assertThrows(Exception.class, () ->  new TimeDelta(new Object[] { Int.getInt(1) }, kwargs));
+        }
+
+        { // Try too many arguments
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            Assert.assertThrows(Exception.class, () ->  new TimeDelta(new Object[] {
+                    Int.getInt(1),
+                    Int.getInt(2),
+                    Int.getInt(3),
+                    Int.getInt(4),
+                    Int.getInt(5),
+                    Int.getInt(6),
+                    Int.getInt(7),
+                    Int.getInt(8),
+                }, kwargs)
+            );
         }
     }
 
