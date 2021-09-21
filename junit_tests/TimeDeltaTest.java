@@ -3,6 +3,7 @@ import org.junit.jupiter.api.Test;
 import org.python.Object;
 import org.python.stdlib.datetime.TimeDelta;
 import org.python.types.Bool;
+import org.python.types.Float;
 import org.python.types.Int;
 import org.python.types.Str;
 
@@ -337,6 +338,69 @@ public class TimeDeltaTest {
             assertEquals(Int.getInt(0), difference.days);
             assertEquals(Int.getInt(60*60*24-1), difference.seconds);
             assertEquals(Int.getInt(0), difference.microseconds);
+        }
+    }
+
+    @Test
+    public void testMultiply() {
+        {
+            TimeDelta td0 = constructTimeDelta(0, 1, 0);
+            Int other = Int.getInt(2);
+
+            TimeDelta product = (TimeDelta)td0.__mul__(other);
+
+            assertEquals(Int.getInt(0), product.days);
+            assertEquals(Int.getInt(2), product.seconds);
+            assertEquals(Int.getInt(0), product.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 0, 10000);
+            Int other = Int.getInt(10000);
+
+            TimeDelta product = (TimeDelta)td0.__mul__(other);
+
+            assertEquals(Int.getInt(0), product.days);
+            assertEquals(Int.getInt(100), product.seconds);
+            assertEquals(Int.getInt(0), product.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 1, 0);
+            Float other = new Float(1.5f);
+
+            TimeDelta product = (TimeDelta)td0.__mul__(other);
+
+            assertEquals(Int.getInt(0), product.days);
+            assertEquals(Int.getInt(1), product.seconds);
+            assertEquals(Int.getInt(500_000), product.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(-1, 0, 0);
+            Float other = new Float(1.5f);
+
+            TimeDelta product = (TimeDelta)td0.__mul__(other);
+
+            // This might look strange, but since days is the only value that goes negative to represent -1.5 days it needs to be 2 with positive seconds.
+            assertEquals(Int.getInt(-2), product.days);
+            assertEquals(Int.getInt(86400/2), product.seconds);
+            assertEquals(Int.getInt(0), product.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 0, 0);
+            Float other = new Float(-1.5f);
+
+            TimeDelta product = (TimeDelta)td0.__mul__(other);
+
+            // Ditto to above test
+            assertEquals(Int.getInt(-2), product.days);
+            assertEquals(Int.getInt(86400/2), product.seconds);
+            assertEquals(Int.getInt(0), product.microseconds);
+        }
+        {
+            // You can't multiply deltas with each other
+            TimeDelta td0 = constructTimeDelta(1, 0, 0);
+            TimeDelta td1 = constructTimeDelta(1, 0, 0);
+
+            Assert.assertThrows(Exception.class, () -> td0.__mul__(td1 ));
         }
     }
 }

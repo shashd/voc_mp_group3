@@ -3,6 +3,7 @@ package org.python.stdlib.datetime;
 import org.python.Object;
 import org.python.exceptions.TypeError;
 import org.python.types.Bool;
+import org.python.types.Float;
 import org.python.types.Int;
 
 import java.util.Arrays;
@@ -198,6 +199,40 @@ public class TimeDelta extends org.python.types.Object {
             ((Int)seconds).value - ((Int)otherObject.seconds).value,
             ((Int)microseconds).value - ((Int)otherObject.microseconds).value
         );
+    }
+
+    @org.python.Method(__doc__ = "", args = { "other" })
+    public org.python.Object __mul__(org.python.Object other) {
+        if (other instanceof Int) {
+            Int otherInt = (Int)other;
+
+            return new TimeDelta(
+                ((Int)days).value * otherInt.value,
+                ((Int)seconds).value * otherInt.value,
+                ((Int)microseconds).value * otherInt.value
+            );
+        }
+
+        if (other instanceof Float) {
+            Double multiplicand = ((Float)other).value;
+
+            double days = multiplicand * ((Int)this.days).value;
+            double seconds = multiplicand * ((Int)this.seconds).value;
+            double microseconds = multiplicand * ((Int)this.microseconds).value;
+
+            // Make sure any fractions trickle down
+            seconds += 86400 * (days % 1);
+            microseconds += 1_000_000 * (seconds % 1);
+
+            return new TimeDelta(
+                (long)days,
+                (long)seconds,
+                (long)microseconds
+            );
+        }
+
+
+        throw new TypeError("unsupported operand type(s) for *: 'datetime.timedelta' and '" + other.typeName() + "'");
     }
 
     @org.python.Method(__doc__ = "", args = { "other" })
