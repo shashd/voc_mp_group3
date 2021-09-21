@@ -1,5 +1,7 @@
 package org.python.stdlib.datetime;
 
+import org.python.types.Int;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -96,6 +98,8 @@ public class TimeDelta extends org.python.types.Object {
             mili = mili + millisecond * 100;
             this.microseconds = org.python.types.Int.getInt(mili);
         }
+
+        normalize();
     }
 
     @org.python.Method(__doc__ = "returns days")
@@ -191,5 +195,25 @@ public class TimeDelta extends org.python.types.Object {
     @org.python.Method(__doc__ = "")
     public static org.python.Object constant_4() {
 	return org.python.types.Int.getInt(4);
+    }
+
+    /**
+     * Keeps numbers well defined in their range
+     */
+    private void normalize() {
+        long microSeconds = ((Int)this.microseconds).value;
+        long seconds = ((Int)this.seconds).value;
+        long days = ((Int)this.days).value;
+
+        seconds += microSeconds / 1_000_000;
+        microSeconds = microSeconds % 1_000_000;
+
+        /// 86400 seconds in a day
+        days += seconds / 86400;
+        seconds = seconds % 86400;
+
+        this.microseconds = Int.getInt(microSeconds);
+        this.seconds = Int.getInt(seconds);
+        this.days = Int.getInt(days);
     }
 }

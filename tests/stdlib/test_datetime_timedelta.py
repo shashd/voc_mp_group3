@@ -2,7 +2,7 @@ from ..utils import TranspileTestCase
 
 class TestTimeDelta(TranspileTestCase):
 
-    def test_sqrt_int(self):
+    def test_constructor(self):
         self.assertCodeExecution("""
             from datetime import timedelta
 
