@@ -147,6 +147,13 @@ public class TimeDeltaTest {
 
             assertEquals(org.python.types.Int.getInt(10), timeDelta.days);
         }
+
+        { // Negative seconds should decrease day
+            TimeDelta timeDelta = constructTimeDelta(0, -1, 0);
+
+            assertEquals(org.python.types.Int.getInt(-1), timeDelta.days);
+            assertEquals(org.python.types.Int.getInt(60*60*24-1), timeDelta.seconds);
+        }
     }
 
     @Test
@@ -282,6 +289,54 @@ public class TimeDeltaTest {
             TimeDelta td1 = constructTimeDelta(1, 2, 3);
 
             assertEquals(Bool.getBool(true), td0.__ge__(td1));
+        }
+    }
+
+    @Test
+    public void testAdd() {
+        {
+            TimeDelta td0 = constructTimeDelta(1, 2, 3);
+            TimeDelta td1 = constructTimeDelta(2, 3, 4);
+
+            TimeDelta sum = (TimeDelta)td0.__add__(td1);
+
+            assertEquals(Int.getInt(3), sum.days);
+            assertEquals(Int.getInt(5), sum.seconds);
+            assertEquals(Int.getInt(7), sum.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(0, 60*60*24-1, 0);
+            TimeDelta td1 = constructTimeDelta(0, 1, 0);
+
+            TimeDelta sum = (TimeDelta)td0.__add__(td1);
+
+            assertEquals(Int.getInt(1), sum.days);
+            assertEquals(Int.getInt(0), sum.seconds);
+            assertEquals(Int.getInt(0), sum.microseconds);
+        }
+    }
+
+    @Test
+    public void testSubtract() {
+        {
+            TimeDelta td0 = constructTimeDelta(2, 5, 7);
+            TimeDelta td1 = constructTimeDelta(1, 3, 4);
+
+            TimeDelta difference = (TimeDelta)td0.__sub__(td1);
+
+            assertEquals(Int.getInt(1), difference.days);
+            assertEquals(Int.getInt(2), difference.seconds);
+            assertEquals(Int.getInt(3), difference.microseconds);
+        }
+        {
+            TimeDelta td0 = constructTimeDelta(1, 0, 0);
+            TimeDelta td1 = constructTimeDelta(0, 1, 0);
+
+            TimeDelta difference = (TimeDelta)td0.__sub__(td1);
+
+            assertEquals(Int.getInt(0), difference.days);
+            assertEquals(Int.getInt(60*60*24-1), difference.seconds);
+            assertEquals(Int.getInt(0), difference.microseconds);
         }
     }
 }

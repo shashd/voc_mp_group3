@@ -312,12 +312,14 @@ public class TimeDelta extends org.python.types.Object {
         long seconds = ((Int)this.seconds).value;
         long days = ((Int)this.days).value;
 
-        seconds += microSeconds / 1_000_000;
-        microSeconds = microSeconds % 1_000_000;
+        // This works like div, but it maintaince the same "cycle" for numbers that are negative
+        seconds += Math.floorDiv(microSeconds, 1_000_000);
+        // This produces the real modulus, because % is actually the remainder in java
+        microSeconds = Math.floorMod(microSeconds, 1_000_000);
 
         /// 86400 seconds in a day
-        days += seconds / 86400;
-        seconds = seconds % 86400;
+        days += Math.floorDiv(seconds, 86400);
+        seconds = Math.floorMod(seconds, 86400);
 
         this.microseconds = Int.getInt(microSeconds);
         this.seconds = Int.getInt(seconds);
