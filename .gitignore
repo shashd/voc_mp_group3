@@ -18,6 +18,7 @@ tests/tmp*
 /stdlib_tests/*.class
 /stdlib_tests/python
 /python/*.class
+out/
 
 .DS_Store
 .idea/
