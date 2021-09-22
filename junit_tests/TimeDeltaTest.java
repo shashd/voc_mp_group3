@@ -78,6 +78,33 @@ public class TimeDeltaTest {
         }
 
         {
+            TimeDelta timeDelta = new TimeDelta(new Object[] { Int.getInt(1) }, Collections.emptyMap());
+
+            assertEquals(org.python.types.Int.getInt(1), timeDelta.days);
+            assertEquals(org.python.types.Int.getInt(0), timeDelta.seconds);
+            assertEquals(org.python.types.Int.getInt(0), timeDelta.microseconds);
+        }
+
+        {
+            TimeDelta timeDelta = new TimeDelta(new Object[] { Int.getInt(1), Int.getInt(2), Int.getInt(3) }, Collections.emptyMap());
+
+            assertEquals(org.python.types.Int.getInt(1), timeDelta.days);
+            assertEquals(org.python.types.Int.getInt(2), timeDelta.seconds);
+            assertEquals(org.python.types.Int.getInt(3), timeDelta.microseconds);
+        }
+
+        {
+            HashMap<String, Object> kwargs = new HashMap<>();
+
+            kwargs.put("microseconds", Int.getInt(42));
+            TimeDelta timeDelta = new TimeDelta(new Object[] { Int.getInt(1), }, kwargs);
+
+            assertEquals(org.python.types.Int.getInt(1), timeDelta.days);
+            assertEquals(org.python.types.Int.getInt(0), timeDelta.seconds);
+            assertEquals(org.python.types.Int.getInt(42), timeDelta.microseconds);
+        }
+
+        {
             HashMap<String, Object> kwargs = new HashMap<>();
 
             kwargs.put("incorrect parameter", org.python.types.Int.getInt(1));
