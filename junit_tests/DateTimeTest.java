@@ -14,15 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class DateTimeTest {
 
-    // writing some helper functions to generate args and kwargs
-    // In your JUnit tests please cover cases for args, kwargs and combinations thereof!
-    // Your tests should cover a good variety of cases: basic inputs and likely/interesting
-    // exceptions and edge cases.
-    // To give an example from the previous sprint: for math.sqrt,
-    // this could e.g. be positive ints and floats, negative ints and floats (ValueError) and
-    // 1-2 examples for non-numerical inputs, e.g. strings and maybe also some form of collection/iterable,
-    // like list (TypeErrors).
-
     private int getIndexOfArray(String target, String[] arr) {
         for (int i = 0; i < arr.length; i++) {
             if (arr[i].equals(target)) {
