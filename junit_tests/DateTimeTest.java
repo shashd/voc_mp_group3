@@ -7,6 +7,8 @@ import org.python.types.Float;
 import org.python.types.Int;
 import org.python.types.Str;
 import org.python.Object;
+import python.datetime;
+
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -240,6 +242,15 @@ public class DateTimeTest {
         DateTime dateTime4 = new DateTime(args, Collections.emptyMap());
         actual = ((Bool) dateTime1.__lt__(dateTime4)).value;
         assertFalse(actual);
+
+        args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(2), Int.getInt(2),
+            Int.getInt(2), Int.getInt(50), Int.getInt(10000)};
+        DateTime dateTime5 = new DateTime(args, Collections.emptyMap());
+        args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(2), Int.getInt(2),
+            Int.getInt(2), Int.getInt(50), Int.getInt(20000)};
+        DateTime dateTime6 = new DateTime(args, Collections.emptyMap());
+        actual = ((Bool) dateTime5.__lt__(dateTime6)).value;
+        assertTrue(actual);
     }
 
     @Test
@@ -305,6 +316,15 @@ public class DateTimeTest {
         DateTime dateTime3 = new DateTime(args, Collections.emptyMap());
         actual = ((Bool) dateTime3.__gt__(dateTime1)).value;
         assertFalse(actual);
+
+        args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(2), Int.getInt(2),
+            Int.getInt(2), Int.getInt(50), Int.getInt(10000)};
+        DateTime dateTime4 = new DateTime(args, Collections.emptyMap());
+        args = new Object[]{Int.getInt(2000), Int.getInt(10), Int.getInt(2), Int.getInt(2),
+            Int.getInt(2), Int.getInt(50), Int.getInt(20000)};
+        DateTime dateTime5 = new DateTime(args, Collections.emptyMap());
+        actual = ((Bool) dateTime5.__gt__(dateTime4)).value;
+        assertTrue(actual);
     }
 
     @Test
@@ -475,6 +495,24 @@ public class DateTimeTest {
             assertEquals(errorMsg, exception.getMessage());
         }
 
+    }
+
+    @Test
+    public void testStr() {
+        Object[] args = {Int.getInt(921), Int.getInt(3), Int.getInt(1),
+            Int.getInt(4), Int.getInt(2), Int.getInt(2), Int.getInt(111)};
+        DateTime dateTime1 = new DateTime(args, Collections.emptyMap());
+        String str = ((String) dateTime1.__str__().value);
+        String str2 = ("2021-12-11 14:02:02.111");
+    }
+
+    @Test
+    public void testToday() {
+        Object[] args = {Int.getInt(2021), Int.getInt(9), Int.getInt(22)};
+        DateTime dateTime1 = new DateTime(args, Collections.emptyMap());
+        DateTime today1 = ((DateTime) dateTime1.today());
+        DateTime today2 = ((DateTime) dateTime1.today());
+        assertTrue(((Bool) today2.__ge__(today1)).value);
     }
 
 }
