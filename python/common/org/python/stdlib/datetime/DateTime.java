@@ -17,6 +17,7 @@ public class DateTime extends org.python.types.Object {
     private final int MIN_YEAR = 1;
     private final int MAX_YEAR = 9999;
 
+
     private Long[] timeUnits = { 0l, 0l, 0l, 0l, 0l, 0l, 0l };
 
     @org.python.Attribute
@@ -241,7 +242,7 @@ public class DateTime extends org.python.types.Object {
 	return org.python.types.Int.getInt(convertToPython[day - 1]);
 
     }
-
+  
     @org.python.Method(
         __doc__ = "Return self < dateTime.",
         args = {"other"}
