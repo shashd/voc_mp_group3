@@ -29,6 +29,7 @@ public class TimeDelta extends org.python.types.Object {
     @org.python.Attribute
     public org.python.Object resolution = __resolution__();
 
+
     /**
      * Convenience constructor
      * @param days
@@ -120,6 +121,7 @@ public class TimeDelta extends org.python.types.Object {
     public org.python.types.Str __days__() {
 	return new org.python.types.Str(this.days + "");
     }
+
 
     @org.python.Method(__doc__ = "returns seconds")
     public org.python.types.Str __seconds__() {

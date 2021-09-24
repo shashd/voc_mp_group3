@@ -1,6 +1,9 @@
 package org.python.stdlib.datetime;
 
+import org.python.types.Object;
+
 import java.util.Collections;
+import java.util.HashMap;
 
 public class DateTime extends org.python.types.Object {
     private final int YEAR_INDEX = 0;
@@ -12,7 +15,8 @@ public class DateTime extends org.python.types.Object {
     private final int MICROSECOND_INDEX = 6;
 
     private final int MIN_YEAR = 1;
-    private final int MAX_YEAR = 999;
+    private final int MAX_YEAR = 9999;
+
 
     private Long[] timeUnits = { 0l, 0l, 0l, 0l, 0l, 0l, 0l };
 
@@ -52,15 +56,28 @@ public class DateTime extends org.python.types.Object {
 
 	for (String key : keys) {
 	    if (kwargs.get(key) != null) {
-		this.timeUnits[keyIndex] = ((org.python.types.Int) kwargs.get(key)).value;
-		kwargsIsUsed = true;
+            if (kwargs.get(key) instanceof org.python.types.Str){
+                throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+            }
+            if (kwargs.get(key) instanceof org.python.types.Float){
+                throw new org.python.exceptions.TypeError("integer argument expected, got float");
+            }
+		    this.timeUnits[keyIndex] = ((org.python.types.Int) kwargs.get(key)).value;
+		    kwargsIsUsed = true;
 	    } else if (args.length > argIndex) {
-		if (kwargsIsUsed)
-		    throw new org.python.exceptions.SyntaxError("positional argument follows keyword argument");
-		this.timeUnits[keyIndex] = ((org.python.types.Int) args[argIndex]).value;
-		argIndex++;
+		    if (kwargsIsUsed) {
+                throw new org.python.exceptions.SyntaxError("positional argument follows keyword argument");
+            }
+            if (args[argIndex] instanceof org.python.types.Str){
+                throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+            }
+            if (args[argIndex] instanceof org.python.types.Float) {
+                throw new org.python.exceptions.TypeError("integer argument expected, got float");
+            }
+		    this.timeUnits[keyIndex] = ((org.python.types.Int) args[argIndex]).value;
+		    argIndex++;
 	    } else if (keyIndex < 3) {
-		throw new org.python.exceptions.TypeError("Required argument '" + keys[keyIndex] + "' (pos " + (keyIndex + 1) + ") not found");
+		    throw new org.python.exceptions.TypeError("Required argument '" + keys[keyIndex] + "' (pos " + (keyIndex + 1) + ") not found");
 	    }
 	    keyIndex++;
 	}
@@ -88,7 +105,7 @@ public class DateTime extends org.python.types.Object {
 	    throw new org.python.exceptions.ValueError("second " + this.timeUnits[SECOND_INDEX] + "is out of range");
 	}
 
-	if (this.timeUnits[MICROSECOND_INDEX] < 0 || this.timeUnits[MICROSECOND_INDEX] > 100000) {
+	if (this.timeUnits[MICROSECOND_INDEX] < 0 || this.timeUnits[MICROSECOND_INDEX] > 999999) {
 	    throw new org.python.exceptions.ValueError("microsecond " + this.timeUnits[MICROSECOND_INDEX] + "is out of range");
 	}
 
@@ -213,9 +230,9 @@ public class DateTime extends org.python.types.Object {
 
     @org.python.Method(__doc__ = "")
     public org.python.Object weekday() {
-	double y = ((org.python.types.Int) this.year).value;
-	double m = ((org.python.types.Int) this.month).value;
-	double d = ((org.python.types.Int) this.day).value;
+	double y = ((org.python.types.Int) this.year.__int__()).value;
+	double m = ((org.python.types.Int) this.month.__int__()).value;
+	double d = ((org.python.types.Int) this.day.__int__()).value;
 
 	java.util.Date myCalendar = new java.util.GregorianCalendar((int) y, (int) m - 1, (int) d).getTime();
 	java.util.Calendar c = java.util.Calendar.getInstance();
@@ -225,4 +242,248 @@ public class DateTime extends org.python.types.Object {
 	return org.python.types.Int.getInt(convertToPython[day - 1]);
 
     }
+  
+    @org.python.Method(
+        __doc__ = "Return self < dateTime.",
+        args = {"other"}
+    )
+    public org.python.Object __lt__(org.python.Object other){
+        if (other instanceof DateTime){
+
+            if (((org.python.types.Bool)this.__year__().__lt__(((DateTime) other).__year__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__year__().__gt__(((DateTime) other).__year__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__month__().__lt__(((DateTime) other).__month__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__month__().__gt__(((DateTime) other).__month__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__day__().__lt__(((DateTime) other).__day__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__day__().__gt__(((DateTime) other).__day__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__hour__().__lt__(((DateTime) other).__hour__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__hour__().__gt__(((DateTime) other).__hour__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__minute__().__lt__(((DateTime) other).__minute__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__minute__().__gt__(((DateTime) other).__minute__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__second__().__lt__(((DateTime) other).__second__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__second__().__gt__(((DateTime) other).__second__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+
+            if (((org.python.types.Bool)this.__microsecond__().__lt__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(true);
+            } else if (((org.python.types.Bool)this.__microsecond__().__gt__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(false);
+            }
+            return org.python.types.Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(
+        __doc__ = "Return self <= dateTime.",
+        args = {"other"}
+    )
+    public org.python.Object __le__(org.python.Object other){
+        if (other instanceof DateTime){
+            if ((((org.python.types.Bool) this.__gt__(other)).value)) {
+                return org.python.types.Bool.getBool(false);
+            } else {
+                return org.python.types.Bool.getBool(true);
+            }
+
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+
+    @org.python.Method(
+        __doc__ = "Return self == dateTime.",
+        args = {"other"}
+    )
+    public org.python.Object __eq__(org.python.Object other){
+        if (other instanceof DateTime){
+            if (((org.python.types.Bool)this.__year__().__eq__(((DateTime) other).__year__())).value
+            && ((org.python.types.Bool)this.__month__().__eq__(((DateTime) other).__month__())).value
+            && ((org.python.types.Bool)this.__day__().__eq__(((DateTime) other).__day__())).value
+            && ((org.python.types.Bool)this.__hour__().__eq__(((DateTime) other).__hour__())).value
+            && ((org.python.types.Bool)this.__minute__().__eq__(((DateTime) other).__minute__())).value
+            && ((org.python.types.Bool)this.__second__().__eq__(((DateTime) other).__second__())).value
+            && ((org.python.types.Bool)this.__microsecond__().__eq__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+            return org.python.types.Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(
+        __doc__ = "Return self > dateTime.",
+        args = {"other"}
+    )
+    public org.python.Object __gt__(org.python.Object other){
+        if (other instanceof DateTime){
+
+            if (((org.python.types.Bool)this.__year__().__lt__(((DateTime) other).__year__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__year__().__gt__(((DateTime) other).__year__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__month__().__lt__(((DateTime) other).__month__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__month__().__gt__(((DateTime) other).__month__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__day__().__lt__(((DateTime) other).__day__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__day__().__gt__(((DateTime) other).__day__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__hour__().__lt__(((DateTime) other).__hour__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__hour__().__gt__(((DateTime) other).__hour__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__minute__().__lt__(((DateTime) other).__minute__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__minute__().__gt__(((DateTime) other).__minute__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__second__().__lt__(((DateTime) other).__second__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__second__().__gt__(((DateTime) other).__second__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+
+            if (((org.python.types.Bool)this.__microsecond__().__lt__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(false);
+            } else if (((org.python.types.Bool)this.__microsecond__().__gt__(((DateTime) other).__microsecond__())).value){
+                return org.python.types.Bool.getBool(true);
+            }
+            return org.python.types.Bool.getBool(false);
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+    @org.python.Method(
+        __doc__ = "Return self >= dateTime.",
+        args = {"other"}
+    )
+    public org.python.Object __ge__(org.python.Object other){
+        if (other instanceof DateTime){
+            if ((((org.python.types.Bool) this.__lt__(other)).value)) {
+                return org.python.types.Bool.getBool(false);
+            } else {
+                return org.python.types.Bool.getBool(true);
+            }
+
+        }
+        return org.python.types.NotImplementedType.NOT_IMPLEMENTED;
+    }
+
+
+    @org.python.Method(
+        __doc__ = "Return a datetime corresponding to a date_string in one of the formats emitted by " +
+            "date.isoformat() and datetime.isoformat().",
+        args = {"other"}
+    )
+    public static org.python.Object fromisoformat(org.python.Object other){
+        java.lang.String str = ((org.python.types.Str) other).value;
+        Object[] args = new Object[]{};
+        if (str.split("T").length <= 2){
+            str = str.replace("T"," ");
+            java.lang.String[] splitStr = str.split(" ");
+            // only date
+            if (splitStr.length == 1){
+                java.lang.String[] date = splitStr[0].split("-");
+                if (date.length!=3 ){
+                    throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+                }
+                long year = java.lang.Long.parseLong(date[0]);
+                long month = java.lang.Long.parseLong(date[1]);
+                long day = java.lang.Long.parseLong(date[2]);
+                args = new Object[]{org.python.types.Int.getInt(year),
+                                org.python.types.Int.getInt(month), org.python.types.Int.getInt(day)};
+
+            }
+            // both date and time
+            else {
+                java.lang.String[] date = splitStr[0].split("-");
+                java.lang.String[] time = splitStr[1].split(":");
+                if (date.length != 3 || time.length != 3){
+                    throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+                }
+                long year = java.lang.Long.parseLong(date[0]);
+                long month = java.lang.Long.parseLong(date[1]);
+                long day = java.lang.Long.parseLong(date[2]);
+                long hour = java.lang.Long.parseLong(time[0]);
+                long minute = java.lang.Long.parseLong(time[1]);
+                long second = 0L;
+                long microsecond = 0L;
+                java.lang.String[] seconds = time[2].split("\\.");
+                // check whether microseconds exist
+                if (seconds.length == 2){
+                    second = Long.parseLong(seconds[0]);
+                    microsecond = Long.parseLong(seconds[1]);
+                } else{
+                    second = Long.parseLong(time[2]);
+                }
+                args =  new Object[]{org.python.types.Int.getInt(year), org.python.types.Int.getInt(month),
+                                     org.python.types.Int.getInt(day),org.python.types.Int.getInt(hour),
+                                    org.python.types.Int.getInt(minute),org.python.types.Int.getInt(second),
+                                    org.python.types.Int.getInt(microsecond)};
+            }
+        } else {
+            throw new org.python.exceptions.ValueError("Invalid isoformat string: " + str);
+        }
+        return new DateTime(args,Collections.emptyMap());
+    }
+
+    @org.python.Method(
+        __doc__ = "Return a datetime with the same attributes, except for those attributes given new values by " +
+            "whichever keyword arguments are specified. Note that tzinfo=None can be specified to create a naive" +
+            " datetime from an aware datetime with no conversion of date and time data.\n",
+        args = {"kwargs"}
+    )
+    public org.python.Object replace(java.util.Map<java.lang.String, org.python.Object> kwargs) {
+        String[] keys = { "year", "month", "day", "hour", "minute", "second", "microsecond" };
+        java.util.Map<java.lang.String, org.python.Object> new_kwargs = new HashMap<>();
+        Object[] args = new Object[0];
+        for (int i = 0; i < keys.length; i++){
+            new_kwargs.put(keys[i], org.python.types.Int.getInt(this.timeUnits[i]));
+            if (kwargs.get(keys[i]) != null){
+                if (kwargs.get(keys[i]) instanceof org.python.types.Str) {
+                    throw new org.python.exceptions.TypeError("an integer is required (got type str)");
+                }
+                if (kwargs.get(keys[i]) instanceof org.python.types.Float) {
+                    throw new org.python.exceptions.TypeError("integer argument expected, got float");
+                }
+                // over-write
+                new_kwargs.put(keys[i],kwargs.get(keys[i]));
+            }
+        }
+        return new DateTime(args,new_kwargs);
+    }
+
 }

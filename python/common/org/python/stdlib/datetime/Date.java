@@ -24,6 +24,7 @@ public class Date extends org.python.types.Object {
     @org.python.Method(__doc__ = "")
     public Date(org.python.Object[] args, java.util.Map<java.lang.String, org.python.Object> kwargs) {
 
+
         super();
 
         if (args.length + kwargs.size() > 3) {
@@ -163,6 +164,7 @@ public class Date extends org.python.types.Object {
 
     @org.python.Method(__doc__ = "")
     public org.python.types.Str __repr__() {
+
         String year = this.year + "";
         while (year.length() < 4)
             year = "0" + year;
