@@ -3,11 +3,11 @@ import org.junit.jupiter.api.Test;
 import org.python.Object;
 import org.python.exceptions.BaseException;
 import org.python.stdlib.datetime.Date;
-import org.python.types.*;
 import org.python.types.Bool;
 import org.python.types.Float;
+import org.python.types.Int;
 import org.python.types.Str;
-
+import org.python.types.Dict;;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -402,6 +402,7 @@ public class DateTest {
         dict.put(new Str("day"), Int.getInt(12));
         dict.put(new Str("month"), Int.getInt(12));
         dict.put(new Str("year"), Int.getInt(2021));
+
         Dict kwargs = new Dict(dict);
         Date newDate = date.replace(kwargs);
 
