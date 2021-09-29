@@ -1,14 +1,14 @@
-package voc;
-
 import org.junit.Test;
 import org.python.exceptions.AttributeError;
 import org.python.exceptions.KeyError;
 import org.python.exceptions.TypeError;
-import org.python.types.*;
 import org.python.types.List;
 import org.python.types.Object;
 import org.python.types.Set;
-
+import org.python.types.Dict;
+import org.python.types.Int;
+import org.python.types.Str;
+import org.python.types.Tuple;
 import java.util.*;
 import java.util.ArrayList;
 import java.util.Map;
