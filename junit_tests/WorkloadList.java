@@ -61,6 +61,7 @@ public class WorkloadList {
 
 
     public static void main(String[] str){
+
         long start = System.nanoTime();
         List insertList = insertRandomInt();
         long end = System.nanoTime();
@@ -83,7 +84,7 @@ public class WorkloadList {
         System.out.println(String.format("DeleteManyItemsFront spends %f seconds.",((double) end-start)/1_000_000_000));
 
         start = System.nanoTime();
-        for (int j=0; j < 300; j++) {
+        for (int j=0; j < 100; j++) {
             List list = createRandomList();
             list.sort(null,Bool.getBool(false));
         }
