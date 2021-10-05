@@ -9,6 +9,9 @@ package org.python.stdlib.collections;
 // TODO: When the methods above are implemented to produce the same output as Python 3.4,
 // TODO: uncomment and remove this line from `test_collections.py`: "Different type prior to Python 3.5"
 
+import org.python.Object;
+import java.lang.reflect.Field;
+
 public class OrderedDict extends org.python.types.Dict {
 
     private OrderedDict() {
@@ -193,6 +196,23 @@ public class OrderedDict extends org.python.types.Dict {
         return this.popitem(org.python.types.Bool.TRUE);
     }
 
+    /**
+     * Use reflection to get the last element of LinkedHashMap
+     * @param map LinkedHashMap
+     * @param <K> Key
+     * @param <V> Value
+     * @return Mao.Entry<K,V>
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     */
+    @SuppressWarnings("unchecked")
+    public <K, V> java.util.Map.Entry<K, V> getTailByReflection(java.util.LinkedHashMap<K, V> map)
+        throws NoSuchFieldException, IllegalAccessException {
+        Field tail = map.getClass().getDeclaredField("tail");
+        tail.setAccessible(true);
+        return (java.util.Map.Entry<K, V>) tail.get(map);
+    }
+
     @org.python.Method(
             __doc__ =
                 "Remove and return a (key, value) pair from the dictionary.\n" +
@@ -206,11 +226,16 @@ public class OrderedDict extends org.python.types.Dict {
         }
 
         org.python.Object key;
-        org.python.Object[] keys = this.value.keySet().toArray(new org.python.Object[this.value.size()]);
         if (last == null || ((org.python.types.Bool) last).value) {
-            key = keys[this.value.size() - 1];
+            try {
+                java.util.Map.Entry<Object, Object> keyEntry = getTailByReflection((java.util.LinkedHashMap<Object, Object>)this.value);
+                key = keyEntry.getKey();
+            } catch (Exception e) {
+                throw new org.python.exceptions.Exception("Reflection error");
+            }
         } else {
-            key = keys[0];
+            java.util.Map.Entry<Object, Object> keyEntry = this.value.entrySet().iterator().next();
+            key = keyEntry.getKey();
         }
 
         org.python.Object value = this.value.remove(key);
